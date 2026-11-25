@@ -16,7 +16,13 @@ services:
       - key: MOSS_INDEX_NAME
         value: Company factuals
       - key: ENABLE_PUBLIC_RERUN
-        value: "false"
+        value: "true"
+      - key: RERUN_MAX_BATCH
+        value: "3"
+      - key: RERUN_RATE_LIMIT_PER_10M
+        value: "4"
+      - key: PUBLIC_SPEND_CAP_USD
+        value: "3.50"
       - key: CHAT_RATE_LIMIT_PER_MIN
         value: "8"
       - key: CHAT_DAILY_LIMIT

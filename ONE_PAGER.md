@@ -1,7 +1,7 @@
 # Moss Inference — Work Sample One-Pager
 
 - **What I ran:** `37` automated test cases (`89` total API calls, `$1.1292` cumulative Tasks + Demo spend out of `$10.00` credits) + `3` Portal UX checks on **`moss` Python SDK `v1.26.0`**.
-- **Links:** [GitHub Repo](https://github.com/VarshilPorecha/moss-inference-eval) · [Full 9-Page Report PDF](https://github.com/VarshilPorecha/moss-inference-eval/blob/main/Moss_Inference_Project_Report.pdf) · [Interactive Dashboard](https://github.com/VarshilPorecha/moss-inference-eval/tree/main/dashboard) *(note: live re-runs are locked on public Render hosting to protect credits)*.
+- **Links:** [GitHub Repo](https://github.com/VarshilPorecha/moss-inference-eval) · [Full 9-Page Report PDF](https://github.com/VarshilPorecha/moss-inference-eval/blob/main/Moss_Inference_Project_Report.pdf) · [Interactive Dashboard](https://github.com/VarshilPorecha/moss-inference-eval/tree/main/dashboard) *(public Render hosting rate-limits live re-runs & chat and caps spend at `$3.50` to protect credits)*.
 
 ---
 

@@ -652,9 +652,8 @@ def build_records() -> dict[str, Any]:
         if c["category"] == "Tasks API" and c["latency_ms"] and c["latency_ms"] >= 1000
     ]
 
-    is_public = bool(os.environ.get("RENDER") or os.environ.get("PORT"))
     public_rerun_locked = (
-        os.environ.get("ENABLE_PUBLIC_RERUN", "false" if is_public else "true").strip().lower() != "true"
+        os.environ.get("ENABLE_PUBLIC_RERUN", "true").strip().lower() != "true"
     )
 
     return {

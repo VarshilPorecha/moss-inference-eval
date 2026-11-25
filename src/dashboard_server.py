@@ -150,6 +150,7 @@ RERUN_LOCK = threading.Lock()
 RATE_LOCK = threading.Lock()
 CHAT_IP_TIMESTAMPS: dict[str, deque[float]] = defaultdict(deque)
 CHAT_GLOBAL_TIMESTAMPS: deque[float] = deque()
+RERUN_IP_TIMESTAMPS: dict[str, deque[float]] = defaultdict(deque)
 
 
 def _is_public_deploy() -> bool:
@@ -157,8 +158,7 @@ def _is_public_deploy() -> bool:
 
 
 def _public_rerun_allowed() -> bool:
-    default = "false" if _is_public_deploy() else "true"
-    return os.environ.get("ENABLE_PUBLIC_RERUN", default).strip().lower() == "true"
+    return os.environ.get("ENABLE_PUBLIC_RERUN", "true").strip().lower() == "true"
 
 
 def _check_admin_password(headers: Any, body: dict[str, Any]) -> bool:
@@ -185,6 +185,30 @@ def _check_chat_rate_limit(client_ip: str) -> str | None:
             return f"Daily public chat cap reached ({per_day}/day) to protect project credits."
         q_ip.append(now)
         CHAT_GLOBAL_TIMESTAMPS.append(now)
+    return None
+
+
+def _check_rerun_guardrails(client_ip: str, test_ids: list[str]) -> tuple[int, str] | None:
+    if not _is_public_deploy():
+        return None
+    max_batch = int(os.environ.get("RERUN_MAX_BATCH", "3"))
+    if len(test_ids) > max_batch:
+        return 400, f"Select at most {max_batch} tests per re-run on the public deployment."
+    per_10m = int(os.environ.get("RERUN_RATE_LIMIT_PER_10M", "4"))
+    now = time.time()
+    with RATE_LOCK:
+        q_ip = RERUN_IP_TIMESTAMPS[client_ip]
+        while q_ip and now - q_ip[0] > 600.0:
+            q_ip.popleft()
+        if len(q_ip) >= per_10m:
+            return 429, f"Rate limit exceeded ({per_10m} re-runs per 10 minutes per IP). Please wait."
+        q_ip.append(now)
+    spend_cap = float(os.environ.get("PUBLIC_SPEND_CAP_USD", "3.50"))
+    has_paid_task = any(tid.startswith("T") or tid == "DEMO-01" for tid in test_ids)
+    if has_paid_task:
+        current_spend = write_dashboard()["kpis"]["total_cost_usd"]
+        if current_spend >= spend_cap:
+            return 403, f"Public spend cap (${spend_cap:.2f}) reached to protect remaining $10 credits."
     return None
 
 
@@ -267,23 +291,29 @@ class DashboardHandler(BaseHTTPRequestHandler):
         if self.path == "/api/rerun":
             try:
                 body = self._read_json()
+                test_ids = [str(x) for x in (body.get("test_ids") or [])]
+                if not test_ids:
+                    self._send_json(HTTPStatus.BAD_REQUEST, {"error": "Provide non-empty test_ids list"})
+                    return
                 if not _public_rerun_allowed() and not _check_admin_password(self.headers, body):
                     self._send_json(
                         HTTPStatus.FORBIDDEN,
                         {
                             "error": (
-                                "Live test re-runs are locked on the public deployment to protect credits. "
+                                "Live test re-runs are locked on this deployment. "
                                 "Enter the admin password or run locally."
                             )
                         },
                     )
                     return
-                test_ids = body.get("test_ids") or []
-                if not isinstance(test_ids, list) or not test_ids:
-                    self._send_json(HTTPStatus.BAD_REQUEST, {"error": "Provide non-empty test_ids list"})
-                    return
+                client_ip = (self.headers.get("X-Forwarded-For") or self.client_address[0]).split(",")[0].strip()
+                if not _check_admin_password(self.headers, body):
+                    guard_err = _check_rerun_guardrails(client_ip, test_ids)
+                    if guard_err:
+                        self._send_json(guard_err[0], {"error": guard_err[1]})
+                        return
                 with RERUN_LOCK:
-                    outcomes = RUNTIME.run(run_selected_tests([str(x) for x in test_ids]))
+                    outcomes = RUNTIME.run(run_selected_tests(test_ids))
                     dashboard = write_dashboard()
                 case_map = {c["id"]: c for c in dashboard["cases"]}
                 enriched = []

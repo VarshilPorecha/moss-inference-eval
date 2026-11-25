@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import threading
 import time
 from http import HTTPStatus
@@ -21,14 +22,27 @@ class MossBackendRuntime:
     """Owns a dedicated asyncio loop thread so MossClient and MossInference stay bound cleanly."""
 
     def __init__(self) -> None:
-        self.cfg = load_config()
+        self.cfg: dict[str, str] | None = None
         self.loop = asyncio.new_event_loop()
         self._ready = threading.Event()
         self._loaded_indexes: set[str] = set()
         self._thread = threading.Thread(target=self._run_loop, daemon=True)
         self._thread.start()
         self._ready.wait(timeout=10)
-        self.moss_client = self.run(self._init_moss_client())
+        self.moss_client: Any = None
+        try:
+            self.cfg = load_config()
+            self.moss_client = self.run(self._init_moss_client())
+        except Exception:
+            # Allow web dashboard & /healthz to boot cleanly even before env vars are set
+            self.cfg = None
+
+    def ensure_configured(self) -> dict[str, str]:
+        if self.cfg is None:
+            self.cfg = load_config()
+        if self.moss_client is None:
+            self.moss_client = self.run(self._init_moss_client())
+        return self.cfg
 
     def _run_loop(self) -> None:
         asyncio.set_event_loop(self.loop)
@@ -39,6 +53,7 @@ class MossBackendRuntime:
         return asyncio.run_coroutine_threadsafe(coro, self.loop).result(timeout=300)
 
     async def _init_moss_client(self) -> Any:
+        assert self.cfg is not None
         return make_moss_client(self.cfg)
 
     async def chat(
@@ -49,6 +64,7 @@ class MossBackendRuntime:
         use_rag: bool,
         use_cache: bool,
     ) -> dict[str, Any]:
+        cfg = self.ensure_configured()
         sources: list[dict[str, Any]] = []
         retrieval_ms = 0.0
 
@@ -80,7 +96,7 @@ class MossBackendRuntime:
         )
 
         t0 = time.perf_counter()
-        async with make_inference_client(self.cfg, timeout=60.0) as inf:
+        async with make_inference_client(cfg, timeout=60.0) as inf:
             resp = await inf.responses.create(
                 model="moss",
                 instructions=instructions,
@@ -114,7 +130,7 @@ class MossBackendRuntime:
                 "source_count": len(sources),
                 "usage": usage_dict,
             },
-            [self.cfg["project_id"], self.cfg["project_key"]],
+            [cfg["project_id"], cfg["project_key"]],
         )
 
         return {
@@ -146,6 +162,16 @@ class DashboardHandler(BaseHTTPRequestHandler):
         return json.loads(raw.decode("utf-8"))
 
     def do_GET(self) -> None:
+        if self.path == "/healthz":
+            self._send_json(
+                HTTPStatus.OK,
+                {"ok": True, "configured": RUNTIME is not None and RUNTIME.cfg is not None},
+            )
+            return
+        if self.path == "/favicon.ico":
+            self.send_response(HTTPStatus.NO_CONTENT)
+            self.end_headers()
+            return
         if self.path in ("/", "/index.html"):
             html_path = DASHBOARD_DIR / "index.html"
             if not html_path.exists():
@@ -164,6 +190,12 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         assert RUNTIME is not None
+        if self.path in ("/api/chat", "/api/rerun"):
+            try:
+                RUNTIME.ensure_configured()
+            except Exception as exc:
+                self._send_json(HTTPStatus.SERVICE_UNAVAILABLE, {"error": str(exc)})
+                return
         if self.path == "/api/chat":
             try:
                 body = self._read_json()
@@ -237,8 +269,10 @@ def main() -> None:
     global RUNTIME
     write_dashboard()
     RUNTIME = MossBackendRuntime()
-    server = ThreadingHTTPServer(("127.0.0.1", 8765), DashboardHandler)
-    print("Moss Interactive Dashboard & RAG Chatbot running at http://127.0.0.1:8765/")
+    port = int(os.environ.get("PORT", "8765"))
+    host = os.environ.get("HOST", "0.0.0.0" if "PORT" in os.environ else "127.0.0.1")
+    server = ThreadingHTTPServer((host, port), DashboardHandler)
+    print(f"Moss Interactive Dashboard & RAG Chatbot running at http://{host}:{port}/", flush=True)
     server.serve_forever()
 
 

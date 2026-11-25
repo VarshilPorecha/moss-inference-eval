@@ -90,4 +90,14 @@ python -m src.eval_tasks --tier 3
 python -m src.eval_tasks --tier 4
 python -m src.demo_research_agent
 python -m src.summarize_results
+python -m src.dashboard_server
 ```
+
+## Deploying to Render
+
+Includes `render.yaml`, `.python-version` (`3.12.8`), and `Procfile` for one-click or manual Render Web Service deployment:
+- **Runtime:** Python 3
+- **Build Command:** `pip install -r requirements.txt && python -m src.build_dashboard`
+- **Start Command:** `python -m src.dashboard_server`
+- **Health Check Path:** `/healthz`
+- **Environment Variables:** `MOSS_PROJECT_ID`, `MOSS_PROJECT_KEY`, `MOSS_INFERENCE_URL=https://inference.moss.dev/v1`, `MOSS_INDEX_NAME=Company factuals`, `PYTHONUNBUFFERED=1`

@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: moss-inference-eval
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python -m src.build_dashboard
+    startCommand: python -m src.dashboard_server
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: MOSS_INFERENCE_URL
+        value: https://inference.moss.dev/v1
+      - key: MOSS_INDEX_NAME
+        value: Company factuals
+      - key: MOSS_PROJECT_ID
+        sync: false
+      - key: MOSS_PROJECT_KEY
+        sync: false

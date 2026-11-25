@@ -38,67 +38,7 @@ def build_records() -> dict[str, Any]:
 
     cases: list[dict[str, Any]] = []
 
-    # --- 1. Portal UX (manual audit) ---
-    cases.extend(
-        [
-            {
-                "id": "PORTAL-01",
-                "category": "Portal UX",
-                "tier": "Onboarding",
-                "runnable": False,
-                "title": "First-Time Setup & Instant Search Playground",
-                "intended": "See how fast a brand-new user can try semantic search after signing up.",
-                "expected": "A guided setup with working sample data so I can test search right away without writing setup code.",
-                "result": "Worked great: Moss created a 50-document sample index ('voice-agent-context') and ran live semantic searches right inside the browser in 1.0 ms with accurate relevance scores (0.94, 0.79, 0.71).",
-                "verdict": "Met",
-                "latency_ms": 1.0,
-                "cost_usd": 0.0,
-                "details": {
-                    "steps_observed": "Step 1 (Use case) -> Step 2 (Attribution) -> Step 3 (Python SDK) -> Step 4 (Live playground)",
-                },
-            },
-            {
-                "id": "PORTAL-02",
-                "category": "Portal UX",
-                "tier": "Onboarding",
-                "runnable": False,
-                "title": "Finding Inference API, Tasks API & Credits on Signup",
-                "intended": "Check whether signing up at portal.usemoss.dev/inference introduces the Inference API, Tasks API, and my $10 credits.",
-                "expected": "Either an Inference-focused walkthrough or a clear 'Skip to Dashboard' button showing models, tasks, and credits.",
-                "result": "Did not meet expectations: all 6 onboarding steps only talked about basic document retrieval. Inference API, Tasks API, available models, and the $10 credit balance were hidden until clicking 'Go to dashboard'. Also, the setup commands used Linux/Mac 'export' syntax instead of Windows PowerShell.",
-                "verdict": "Did Not Meet",
-                "latency_ms": None,
-                "cost_usd": 0.0,
-                "details": {
-                    "improvements": [
-                        "Add a clear 'Skip to Inference Playground' option on Step 1",
-                        "Show live indexing progress and chunk count during Step 5-6 upload",
-                        "Provide PowerShell-compatible environment variable commands",
-                    ]
-                },
-            },
-            {
-                "id": "PORTAL-03",
-                "category": "Portal UX",
-                "tier": "Auth & 2FA",
-                "runnable": False,
-                "title": "2FA Phone Number Format Validation",
-                "intended": "Test whether the Portal validates phone number formatting during two-factor authentication (2FA) before sending an OTP.",
-                "expected": "Reject an incorrectly formatted phone number immediately with a clear validation error and never claim an OTP was sent.",
-                "result": "Broken validation: even when an incorrectly formatted phone number is entered during 2FA, the UI still displays 'OTP sent' instead of catching the bad format.",
-                "verdict": "Did Not Meet",
-                "latency_ms": None,
-                "cost_usd": 0.0,
-                "details": {
-                    "bug": "2FA UI displays 'OTP sent' on malformed phone numbers",
-                    "impact": "Users never receive the OTP, causing silent auth failures and unnecessary SMS dispatch attempts",
-                    "fix": "Enforce E.164 phone number validation on both client form and backend endpoint before triggering OTP send",
-                },
-            },
-        ]
-    )
-
-    # --- 2. Inference API (latest run per group/case) ---
+    # --- 1. Inference API (latest run per group/case) ---
     preflight = next((r for r in reversed(inf_rows) if r.get("test_group") == "preflight"), None)
     if preflight:
         cases.append(
@@ -165,34 +105,42 @@ def build_records() -> dict[str, Any]:
 
     rag_copy = {
         "G1_standard_return": (
+            "Single-PDF Lookup: Standard Return Window & Restocking Fee",
             "Ask for our company's standard return window and opened-box restocking fee.",
             "Answer '19 calendar days' and '12.5%' from PDF 01 (and refuse when the index is turned off).",
         ),
         "G2_duplicate_charge": (
+            "Single-PDF Lookup: Duplicate Charge Refund & Fee-Bypass Rule",
             "Ask how support handles a duplicate charge on the same order.",
             "Cite the 15-minute verification window, 3-to-5-business-day settlement, and that the 12.5% restocking fee is bypassed.",
         ),
         "G3_err_419_sync_and_reset": (
+            "Technical Runbook Lookup: Error ERR-419-SYNC & Reset Steps",
             "Ask what causes hardware error ERR-419-SYNC, how to fix it, and how long to hold the reset buttons.",
             "Answer 2.4 GHz interference (cause), switch to 5 GHz Band C (fix), and hold Mute+Pair for 11 seconds.",
         ),
         "G4_sku_pricing_and_hold": (
+            "Cross-PDF Synthesis: Combine Catalog Price + Warranty Hold (2 PDFs)",
             "Ask a question requiring two different PDFs: the Hub Pro SKU and price (PDF 05) plus its replacement deposit hold (PDF 03).",
             "Combine both PDFs to return SKU-KHP-900, $349 MSRP, and $149 deposit hold.",
         ),
         "G5_enterprise_sla": (
+            "Enterprise Terms Lookup: P1 SLA, 45-Day Return & VIP Code",
             "Ask for Enterprise VIP terms: outage response time, extended return window, and escalation code.",
             "Return 47-minute response SLA, 45-day return window, and code ESC-KST-ENT1.",
         ),
         "G6_holiday_precedence": (
+            "Policy Override Check: Holiday Addendum Supersedes Standard Rule",
             "Test whether a seasonal holiday addendum (PDF 09) overrides the standard 19-day return rule (PDF 01) for a Nov 15, 2026 order.",
             "Override the 19-day rule and state the extended deadline of January 22, 2027 (for Nov 1-Dec 24 orders).",
         ),
         "G7_voice_escalation_codes": (
+            "Guardrail Lookup: Human Handoff Codes ($500+ Refund & Chargeback)",
             "Ask which human-handoff codes to use for a $500+ refund vs. a customer threatening a chargeback.",
             "Cite ESC-KST-409 for $500+ refunds and ESC-KST-911 for chargeback threats.",
         ),
         "G8_firmware_tls_and_bug": (
+            "Release Notes Lookup: TLS 1.1 Cutoff Date & macOS Sequoia Bug",
             "Ask for the TLS 1.1 shutoff date and the workaround for macOS Sequoia bug BUG-884 from the release notes (PDF 10).",
             "Cite December 15, 2026 and connecting wirelessly via Kestrel Hub Pro to avoid the 3-second macOS Sequoia delay.",
         ),
@@ -204,7 +152,9 @@ def build_records() -> dict[str, Any]:
             latest_rag[r["case_id"]] = r
 
     for cid, r in latest_rag.items():
-        intended, expected = rag_copy.get(cid, ("Ask a question grounded in our PDFs.", "Return exact facts from the PDFs."))
+        title, intended, expected = rag_copy.get(
+            cid, (cid, "Ask a question grounded in our PDFs.", "Return exact facts from the PDFs.")
+        )
         g_ok = r["grounded_matched"]
         g_ms = r["grounded_ms"]
         ug_ms = r["ungrounded_ms"]
@@ -235,7 +185,7 @@ def build_records() -> dict[str, Any]:
                 "category": "Inference API",
                 "tier": "PDF Knowledge (RAG)",
                 "runnable": True,
-                "title": f"PDF Question: {cid.replace('_', ' ')}",
+                "title": title,
                 "intended": intended,
                 "expected": expected,
                 "result": res_txt,
@@ -247,9 +197,21 @@ def build_records() -> dict[str, Any]:
         )
 
     abst_copy = {
-        "A1_crypto_payments": ("Ask if Kestrel accepts Bitcoin or Solana (not mentioned anywhere in the 10 PDFs).", "Refuse to guess and say the documents don't cover crypto payments."),
-        "A2_unreleased_hardware": ("Ask for the price of a fictional 'Kestrel Ultra 2027' headset not in our PDFs.", "Refuse to invent a price and explain it isn't in the docs."),
-        "A3_tokyo_office": ("Ask for the street address of a Tokyo hub (only Austin & Rotterdam exist in PDF 07).", "State clearly that there is no Tokyo address in the documents."),
+        "A1_crypto_payments": (
+            "Hallucination Trap: Ask About Unmentioned Crypto Payments",
+            "Ask if Kestrel accepts Bitcoin or Solana (not mentioned anywhere in the 10 PDFs).",
+            "Refuse to guess and say the documents don't cover crypto payments.",
+        ),
+        "A2_unreleased_hardware": (
+            "Hallucination Trap: Ask About Fictional 'Kestrel Ultra 2027' Headset",
+            "Ask for the price of a fictional 'Kestrel Ultra 2027' headset not in our PDFs.",
+            "Refuse to invent a price and explain it isn't in the docs.",
+        ),
+        "A3_tokyo_office": (
+            "Hallucination Trap: Ask About Unlisted Tokyo Office Address",
+            "Ask for the street address of a Tokyo hub (only Austin & Rotterdam exist in PDF 07).",
+            "State clearly that there is no Tokyo address in the documents.",
+        ),
     }
     latest_abst: dict[str, dict[str, Any]] = {}
     for r in inf_rows:
@@ -257,7 +219,9 @@ def build_records() -> dict[str, Any]:
             latest_abst[r["case_id"]] = r
 
     for cid, r in latest_abst.items():
-        intended, expected = abst_copy.get(cid, ("Ask about facts missing from the PDFs.", "Refuse rather than hallucinate."))
+        title, intended, expected = abst_copy.get(
+            cid, (cid, "Ask about facts missing from the PDFs.", "Refuse rather than hallucinate.")
+        )
         abstained = r["abstained"]
         cases.append(
             {
@@ -265,7 +229,7 @@ def build_records() -> dict[str, Any]:
                 "category": "Inference API",
                 "tier": "Honesty / No Guessing",
                 "runnable": True,
-                "title": f"Missing-Fact Check: {cid.replace('_', ' ')}",
+                "title": title,
                 "intended": intended,
                 "expected": expected,
                 "result": (
@@ -331,24 +295,28 @@ def build_records() -> dict[str, Any]:
 
     err_copy = {
         "nonexistent_index": (
+            "Error Handling: Query a Nonexistent Index Name",
             "Send a request pointing to an index name that doesn't exist.",
             "Return a clear '404 Not Found' error telling the developer the index doesn't exist.",
             "Did Not Meet",
             lambda r: f"Confusing error: returned HTTP 403 Permission Error ('{r.get('message')}') instead of 404 Not Found, making a simple typo look like an access breach.",
         ),
         "empty_input": (
+            "Input Validation: Send an Empty Prompt String",
             "Send an empty message (input='') to test input validation.",
             "Reject the empty prompt with a '400 Bad Request' error.",
             "Did Not Meet",
             lambda r: "Broken validation: accepted the empty string, returned 200 OK, and hallucinated an answer claiming it couldn't identify an image that was never sent.",
         ),
         "invalid_model_no_byok": (
+            "BYOK Guardrail: Call OpenAI Model Without Own Key",
             "Try calling 'gpt-4o-mini' without providing a personal OpenAI API key.",
             "Return a clear error explaining that third-party models need a provider key.",
             "Met",
             lambda r: f"Worked great: returned HTTP 400 with a helpful message telling you to pass X-Moss-Provider-Key or switch to 'moss/fastlane-1'.",
         ),
         "invalid_key": (
+            "Auth Security: Reject Fake Project API Key",
             "Send a fake project API key to verify security.",
             "Reject the request immediately with a 401 Unauthorized error.",
             "Met",
@@ -356,7 +324,7 @@ def build_records() -> dict[str, Any]:
         ),
     }
     for pid, r in latest_err.items():
-        intended, expected, default_verdict, fmt_fn = err_copy[pid]
+        title, intended, expected, default_verdict, fmt_fn = err_copy[pid]
         verdict = default_verdict
         if pid == "empty_input" and r.get("raised"):
             verdict = "Met"
@@ -366,7 +334,7 @@ def build_records() -> dict[str, Any]:
                 "category": "Inference API",
                 "tier": "Error Handling",
                 "runnable": True,
-                "title": f"Edge Case: {pid.replace('_', ' ')}",
+                "title": title,
                 "intended": intended,
                 "expected": expected,
                 "result": fmt_fn(r),
@@ -400,50 +368,62 @@ def build_records() -> dict[str, Any]:
     # --- 3. Tasks API (latest run per case_id) ---
     task_copy = {
         "T1_books_top5": (
+            "Single-Page Scrape: Extract First 5 Books, Prices & Stock",
             "Open books.toscrape.com and extract the first 5 book titles, prices, and stock statuses in structured JSON.",
             "Finish cleanly with all 5 books accurate and matching the requested data format.",
         ),
         "T1_quotes_top5": (
+            "Single-Page Scrape: Extract First 5 Quotes, Authors & Tags",
             "Open quotes.toscrape.com and extract the first 5 quotes, authors, and tag lists.",
             "Finish cleanly with all 5 quotes accurate and matching the requested format.",
         ),
         "T2_books_science_extremes": (
+            "Multi-Step Navigation: Find Cheapest & Priciest Book in Science",
             "Navigate into the 'Science' category, inspect all books there, and find the total count plus cheapest and priciest book.",
             "Click through to Science and return 14 books, cheapest £10.01 (Origin of Species), priciest £57.36.",
         ),
         "T2_quotes_page2_life": (
+            "Pagination & Filtering: Find 'Life' Quotes on Page 2",
             "Click 'Next' to go to Page 2 of quotes.toscrape.com and extract only the quotes tagged 'life'.",
             "Navigate to Page 2 and return all 4 'life'-tagged quotes accurately.",
         ),
         "T3_js_rendered_quotes": (
+            "JavaScript-Rendered Page: Wait for Hydration & Extract Quotes",
             "Open a JavaScript-rendered page (/js/) where quotes load dynamically and extract the first 3.",
             "Wait for JavaScript to finish loading and extract 3 valid quotes.",
         ),
         "T3_pypi_moss_metadata": (
+            "Live Website Scrape: Get Moss Version & Python Requirement from PyPI",
             "Visit the live PyPI page for 'moss' and extract the latest version, release date, and Python requirement.",
             "Extract moss version 1.26.0, release date 2026-11-23, and Python >=3.10.",
         ),
         "T4_impossible_price_goal": (
+            "Break-It: Ask for Nonexistent Book Under £1.00 (Honesty Check)",
             "Break-It Test: Ask the browser agent to find a book under £1.00 (no such book exists on the site).",
             "Honestly report that no book under £1.00 was found instead of making one up.",
         ),
         "T4_missing_required_isbn": (
+            "Break-It: Require Missing ISBN-13 Field (Schema Failure Status)",
             "Break-It Test: Require a 13-digit ISBN code from a book page that does not display an ISBN anywhere.",
             "Since the required field is missing, mark the task as failed or incomplete rather than pretending it succeeded.",
         ),
         "T4_strict_nested_enum": (
+            "Break-It: Enforce Nested JSON, Rating Bounds (1-5) & Exact Labels",
             "Break-It Test: Enforce strict nested objects, 1-to-5 star ratings, currency='GBP', and exact stock labels.",
             "Follow every nested type, number range, and allowed text option with zero formatting errors.",
         ),
         "T4_broken_404_url": (
+            "Break-It: Handle Broken 404 Page Without Hallucinating",
             "Break-It Test: Send the browser agent to a broken 404 page that doesn't exist.",
             "Recognize the 404 page cleanly without crashing or inventing fake page text.",
         ),
         "T4_non_html_json_url": (
+            "Break-It: Extract Fields from Raw JSON Endpoint Instead of HTML",
             "Break-It Test: Point the browser agent at a raw JSON API response (httpbin.org/json) instead of a webpage.",
             "Read the raw JSON displayed in the browser and extract the slideshow title and author.",
         ),
         "T4_budget_limit_probe": (
+            "Break-It: Enforce Tight $0.02 Spending Cap on 50-Page Crawl",
             "Break-It Test: Give the agent a massive 50-page crawl goal with a tiny $0.02 spending cap.",
             "Stop as soon as spending hits $0.02 and report a budget-exceeded error.",
         ),
@@ -467,7 +447,9 @@ def build_records() -> dict[str, Any]:
             latest_parallel = r
 
     for cid, r in latest_tasks.items():
-        intended, expected = task_copy.get(cid, ("Run automated browser task.", "Complete cleanly."))
+        title, intended, expected = task_copy.get(
+            cid, (cid.replace("_", " "), "Run automated browser task.", "Complete cleanly.")
+        )
         cost = (r.get("usage") or {}).get("cost_usd") or 0.0
         total_usd = ((r.get("usage") or {}).get("raw") or {}).get("cost", {}).get("total_usd") or cost
         gw_pass = (r.get("verification") or {}).get("passed")
@@ -503,7 +485,7 @@ def build_records() -> dict[str, Any]:
                 "category": "Tasks API",
                 "tier": f"Tier {r['tier']}",
                 "runnable": True,
-                "title": cid.replace("_", " "),
+                "title": title,
                 "intended": intended,
                 "expected": expected,
                 "result": res_txt,
@@ -1050,7 +1032,7 @@ HTML_TEMPLATE = """<!doctype html>
     }
 
     function renderFilters() {
-      const cats = ['All', 'Portal UX', 'Inference API', 'Tasks API', 'Combined Demo'];
+      const cats = ['All', 'Inference API', 'Tasks API', 'Combined Demo'];
       document.getElementById('catFilters').innerHTML = cats.map(c =>
         `<button class="pill ${activeCategory === c ? 'active' : ''}" onclick="setCat('${c}')">${c}</button>`
       ).join('');
@@ -1172,9 +1154,9 @@ HTML_TEMPLATE = """<!doctype html>
             ${c.runnable ? `<input type="checkbox" ${checkedIds.has(c.id) ? 'checked' : ''} onchange="toggleCheck('${c.id}', event)" />` : '<span style="color:var(--muted)">—</span>'}
           </td>
           <td>
-            <div class="mono" style="color:var(--accent);font-weight:600">${c.id}</div>
-            <div style="font-size:12px;font-weight:600;margin-top:2px">${escapeHtml(c.title)}</div>
-            <div style="margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <div style="font-size:13px;font-weight:700;color:var(--text)">${escapeHtml(c.title)}</div>
+            <div class="mono" style="color:var(--accent);font-size:11px;margin-top:2px">${c.id}</div>
+            <div style="margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
               <span class="cat-tag">${c.category} · ${c.tier}</span>
               ${c.runnable ? `<button class="btn-sm" onclick="event.stopPropagation(); rerunIds(['${c.id}'])">Re-run</button>` : ''}
             </div>

@@ -1,0 +1,62 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 2551 >>
+stream
+BT /F2 9 Tf 1 0 0 1 54.0 738.0 Tm (ENTERPRISE AGREEMENTS) Tj ET
+BT /F2 17 Tf 1 0 0 1 54.0 720.0 Tm (Enterprise SLA, Extended Returns, and Dedicated) Tj ET
+BT /F2 17 Tf 1 0 0 1 54.0 698.0 Tm (Escalation Terms) Tj ET
+BT /F1 9 Tf 1 0 0 1 54.0 676.0 Tm (Doc ID: KB-ENT-006  |  Version: 1.9  |  Effective: 2026-01-20) Tj ET
+0.75 0.78 0.80 RG 0.8 w 54 666.0 m 558 666.0 l S 0 0 0 RG
+BT /F2 12 Tf 1 0 0 1 54.0 646.0 Tm (1. Enterprise Eligibility & Uptime SLA) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 629.0 Tm (Accounts holding 25 or more active Cloud Voice seats under SKU-KCP-ENT receive Kestrel) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 615.0 Tm (Enterprise Terms, superseding standard consumer policies wherever explicitly stated) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 601.0 Tm (below.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 581.0 Tm (- Guaranteed Cloud Voice Routing Uptime: 99.95% monthly availability.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 564.0 Tm (- Service Credit Schedule: < 99.95% earns 10% monthly credit; < 99.50% earns 25%) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 550.0 Tm (  monthly credit; < 99.00% earns 50% monthly credit.) Tj ET
+BT /F2 12 Tf 1 0 0 1 54.0 525.0 Tm (2. Incident Response SLAs) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 508.0 Tm (- Severity 1 \(P1 - Complete voice outage affecting >= 25% of seats\): 47-minute) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 494.0 Tm (  initial engineering response, 24/7.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 477.0 Tm (- Severity 2 \(P2 - Degraded audio / ERR-419-SYNC on multiple rooms\): 4-hour response) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 463.0 Tm (  during business hours.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 446.0 Tm (- Severity 3 \(P3 - Portal reporting or non-blocking API question\): 1 business day.) Tj ET
+BT /F2 12 Tf 1 0 0 1 54.0 421.0 Tm (3. Enterprise Return & Escalation Overrides) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 404.0 Tm (- Extended Return Window: Enterprise accounts receive a 45-calendar-day return) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 390.0 Tm (  window \(versus the standard 19 days in KB-POL-001\).) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 373.0 Tm (- Restocking Fee Waiver: The 12.5% opened-box restocking fee is waived for up to 10) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 359.0 Tm (  units per quarter.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 342.0 Tm (- VIP Escalation Code: Agents must tag Enterprise P1 calls with ESC-KST-ENT1 to) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 328.0 Tm (  route directly to the assigned Technical Account Manager \(TAM\).) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.0 34.0 Tm (Kestrel Systems, Inc. - Internal Knowledge Base  |  KB-ENT-006  |  Page 1 of 1) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000456 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+3059
+%%EOF

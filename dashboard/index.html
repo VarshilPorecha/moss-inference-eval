@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Moss Inference — RAG Chatbot &amp; Test Bench</title>
+  <style>
+    :root {
+      --bg: #0a0e0c;
+      --panel: #111815;
+      --panel-2: #16201b;
+      --border: #23332b;
+      --text: #e6efe9;
+      --muted: #93a89b;
+      --accent: #6ee7b7;
+      --green: #34d399;
+      --amber: #fbbf24;
+      --red: #f87171;
+      --blue: #60a5fa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .wrap { max-width: 1360px; margin: 0 auto; padding: 24px 24px 72px; }
+    header {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end;
+      gap: 16px; border-bottom: 1px solid var(--border); padding-bottom: 18px; margin-bottom: 22px;
+    }
+    .badge-top {
+      display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .04em;
+      text-transform: uppercase; color: var(--accent); background: rgba(110,231,183,.1);
+      border: 1px solid rgba(110,231,183,.25); padding: 4px 10px; border-radius: 999px; margin-bottom: 8px;
+    }
+    h1 { margin: 0; font-size: 25px; font-weight: 700; }
+    .sub { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+
+    /* Chatbot Panel */
+    .chat-card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+      padding: 18px; margin-bottom: 22px;
+    }
+    .chat-header {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+      gap: 12px; margin-bottom: 12px;
+    }
+    .chat-header h2 { margin: 0; font-size: 16px; color: var(--accent); }
+    .chat-opts { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 12.5px; color: var(--muted); }
+    select, input.text-in {
+      background: #0c120f; color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 10px; font-size: 13px;
+    }
+    .chat-log {
+      background: #0b100d; border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px; max-height: 330px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+      margin-bottom: 12px;
+    }
+    .msg { max-width: 88%; padding: 10px 14px; border-radius: 10px; font-size: 13.5px; }
+    .msg.user { align-self: flex-end; background: rgba(110,231,183,.14); border: 1px solid rgba(110,231,183,.3); }
+    .msg.bot { align-self: flex-start; background: var(--panel-2); border: 1px solid var(--border); }
+    .msg-meta { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .sources-box {
+      margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); font-size: 11.5px; color: var(--muted);
+    }
+    .source-hit { margin-top: 4px; padding: 5px 8px; background: #0b100d; border-radius: 6px; border: 1px solid #1d2b24; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .chip {
+      background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+      border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+    .chat-form { display: flex; gap: 10px; }
+    .chat-form input { flex: 1; padding: 10px 12px; }
+    .btn-primary {
+      background: var(--accent); color: #062114; border: none; border-radius: 8px;
+      padding: 8px 16px; font-weight: 700; font-size: 13px; cursor: pointer;
+    }
+    .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-sm {
+      background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 9px; font-size: 11.5px; cursor: pointer;
+    }
+    .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* KPIs & Charts */
+    .kpis {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 12px; margin-bottom: 20px;
+    }
+    .kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+    .kpi .label { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .kpi .val { font-size: 24px; font-weight: 700; margin-top: 4px; }
+    .kpi .hint { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .card h2 { margin: 0 0 12px; font-size: 14.5px; font-weight: 600; color: var(--accent); }
+    .bar-row { margin-bottom: 10px; }
+    .bar-head { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+    .bar-track { height: 9px; background: #0c120f; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; }
+
+    /* Controls & Selective Re-Runner */
+    .controls {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+      padding: 12px 16px; margin-bottom: 12px;
+    }
+    .rerun-bar {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+      background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 10px 14px; margin-bottom: 14px; font-size: 13px;
+    }
+    .btn-group { display: flex; flex-wrap: wrap; gap: 6px; }
+    button.pill {
+      background: var(--panel-2); color: var(--muted); border: 1px solid var(--border);
+      padding: 5px 11px; border-radius: 999px; font-size: 12.5px; cursor: pointer;
+    }
+    button.pill.active {
+      background: rgba(110,231,183,.15); color: var(--accent); border-color: var(--accent); font-weight: 600;
+    }
+    input.search {
+      margin-left: auto; background: #0c120f; color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 11px; font-size: 13px; min-width: 230px;
+    }
+    .table-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      text-align: left; padding: 12px 12px; background: var(--panel-2); color: var(--muted);
+      font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+    tbody tr:hover { background: rgba(110,231,183,.04); }
+    tbody tr.selected { background: rgba(110,231,183,.09); }
+    td { padding: 12px; vertical-align: top; }
+    .tag { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .tag.met { background: rgba(52,211,153,.14); color: var(--green); border: 1px solid rgba(52,211,153,.35); }
+    .tag.partial { background: rgba(251,191,36,.14); color: var(--amber); border: 1px solid rgba(251,191,36,.35); }
+    .tag.fail { background: rgba(248,113,113,.14); color: var(--red); border: 1px solid rgba(248,113,113,.35); }
+    .cat-tag {
+      display: inline-block; padding: 2px 7px; border-radius: 6px; font-size: 11px;
+      background: #0c120f; border: 1px solid var(--border); color: var(--muted);
+    }
+    .drawer {
+      margin-top: 18px; background: var(--panel); border: 1px solid var(--accent);
+      border-radius: 12px; padding: 18px; display: none;
+    }
+    .drawer.open { display: block; }
+    .drawer-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .rerun-results {
+      background: var(--panel); border: 1px solid var(--accent); border-radius: 12px;
+      padding: 16px; margin-bottom: 16px; display: none;
+    }
+    .rerun-results.open { display: block; }
+    .rerun-item {
+      background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 14px; margin-top: 10px;
+    }
+    .rerun-item-head {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px;
+      margin-bottom: 8px;
+    }
+    .rerun-out-box {
+      margin-top: 8px; background: #090d0b; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px; font-size: 12px; color: #c7dfd0; white-space: pre-wrap; max-height: 200px; overflow-y: auto;
+    }
+    pre {
+      background: #090d0b; border: 1px solid var(--border); border-radius: 8px; padding: 12px;
+      overflow-x: auto; font-size: 12px; color: #c7dfd0; max-height: 360px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <span class="badge-top">Moss Inference Work Sample · Live RAG + Test Bench</span>
+        <h1>Moss RAG Chatbot &amp; Evaluation Dashboard</h1>
+        <div class="sub">Chat directly with your 10 indexed PDFs, inspect plain-English test results below, and re-run only the specific tests you select.</div>
+      </div>
+      <div class="sub mono" id="creditBanner"></div>
+    </header>
+
+    <!-- Live RAG Chatbot -->
+    <section class="chat-card">
+      <div class="chat-header">
+        <h2>Live Indexed-Document RAG Chatbot</h2>
+        <div class="chat-opts">
+          <label>Index:
+            <select id="chatIndex">
+              <option value="Company factuals">Company factuals (10 Kestrel PDFs)</option>
+              <option value="voice-agent-context">voice-agent-context (Moss sample)</option>
+            </select>
+          </label>
+          <label><input type="checkbox" id="useRag" checked /> Ground in Index (RAG)</label>
+          <label><input type="checkbox" id="useCache" /> Use Cache</label>
+          <button class="btn-sm" onclick="clearChat()">Clear Chat</button>
+        </div>
+      </div>
+
+      <div class="chips">
+        <button class="chip" onclick="askPreset('What is the standard return window and opened-box restocking fee?')">Return window &amp; fee?</button>
+        <button class="chip" onclick="askPreset('If someone ordered hardware on Nov 15, 2026, what is their return deadline?')">Nov 15, 2026 holiday deadline?</button>
+        <button class="chip" onclick="askPreset('What causes ERR-419-SYNC and how do I fix it?')">Fix ERR-419-SYNC</button>
+        <button class="chip" onclick="askPreset('What is the SKU, MSRP, and replacement deposit hold for Kestrel Hub Pro?')">Hub Pro SKU, price &amp; hold</button>
+        <button class="chip" onclick="askPreset('Does Kestrel accept Bitcoin payments?')">Bitcoin test (missing fact)</button>
+      </div>
+
+      <div class="chat-log" id="chatLog">
+        <div class="msg bot">
+          Ask anything about the 10 uploaded Kestrel Systems PDFs (returns, warranty, error codes, Enterprise SLAs, Q4 holiday addendum, or firmware release notes). Toggle <strong>Ground in Index (RAG)</strong> off to compare ungrounded replies.
+        </div>
+      </div>
+
+      <form class="chat-form" onsubmit="sendChat(event)">
+        <input class="text-in" id="chatInput" type="text" placeholder="Ask a question grounded in your Moss index..." required />
+        <button class="btn-primary" id="chatSendBtn" type="submit">Send</button>
+      </form>
+    </section>
+
+    <section class="kpis" id="kpiGrid"></section>
+
+    <section class="grid-2">
+      <div class="card">
+        <h2>Inference API Latency Profile (ms)</h2>
+        <div id="infChart"></div>
+      </div>
+      <div class="card">
+        <h2>Tasks API Wall Time (s) &amp; Cost ($)</h2>
+        <div id="taskChart"></div>
+      </div>
+    </section>
+
+    <section class="controls">
+      <div class="btn-group" id="catFilters"></div>
+      <div class="btn-group" id="verdictFilters"></div>
+      <input class="search" id="searchBox" type="search" placeholder="Search tests..." />
+    </section>
+
+    <section class="rerun-bar">
+      <div class="btn-group">
+        <button class="btn-sm" onclick="selectBroken()">Select Broken / Partial</button>
+        <button class="btn-sm" onclick="selectCategory('Inference API')">Select Inference</button>
+        <button class="btn-sm" onclick="selectCategory('Tasks API')">Select Tasks</button>
+        <button class="btn-sm" onclick="clearSelection()">Clear Selection</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span id="rerunStatus" class="mono" style="color:var(--muted)">0 tests selected</span>
+        <button class="btn-primary" id="rerunBtn" onclick="rerunSelected()" disabled>Re-Run Selected Tests</button>
+      </div>
+    </section>
+
+    <section class="rerun-results" id="rerunResults">
+      <div class="drawer-head">
+        <strong style="color:var(--accent)">Latest Re-Run Results (Output &amp; Expectation Check)</strong>
+        <button class="btn-sm" onclick="document.getElementById('rerunResults').classList.remove('open')">Hide</button>
+      </div>
+      <div id="rerunResultsBody"></div>
+    </section>
+
+    <section class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 4%">Run</th>
+            <th style="width: 14%">Test</th>
+            <th style="width: 21%">What I Intended</th>
+            <th style="width: 20%">What Was Expected</th>
+            <th style="width: 29%">What I Got</th>
+            <th style="width: 12%">Met Expectation?</th>
+          </tr>
+        </thead>
+        <tbody id="casesBody"></tbody>
+      </table>
+    </section>
+
+    <section class="drawer" id="detailDrawer">
+      <div class="drawer-head">
+        <strong id="drawerTitle" class="mono"></strong>
+        <button class="pill" onclick="document.getElementById('detailDrawer').classList.remove('open')">Close</button>
+      </div>
+      <pre id="drawerJson"></pre>
+    </section>
+  </div>
+
+  <script>
+    let DATA = {"kpis": {"total_cases": 40, "met": 26, "partial": 7, "did_not_meet": 7, "total_cost_usd": 0.972, "credit_budget_usd": 10.0, "warm_ttft_p50_ms": 145.3, "rag_exact_match": "6/8", "tasks_tier1_3_pass": "6/6 (100%)"}, "charts": {"inference_latency": [{"label": "Cold First Request (Run 1)", "ms": 1121.82, "color": "#f59e0b"}, {"label": "Warm Streaming (p50 TTFT)", "ms": 145.315, "color": "#34d399"}, {"label": "Cache Pass 1 (Uncached)", "ms": 61.27, "color": "#60a5fa"}, {"label": "Cache Pass 2 (Cache Hit)", "ms": 61.25, "color": "#10b981"}], "tasks": [{"id": "T1_books_top5", "seconds": 27.93, "cost": 0.0617, "verdict": "Met"}, {"id": "T1_quotes_top5", "seconds": 26.75, "cost": 0.0638, "verdict": "Met"}, {"id": "T2_books_science_extremes", "seconds": 30.87, "cost": 0.0689, "verdict": "Met"}, {"id": "T2_quotes_page2_life", "seconds": 38.45, "cost": 0.0812, "verdict": "Met"}, {"id": "T3_js_rendered_quotes", "seconds": 23.82, "cost": 0.0602, "verdict": "Met"}, {"id": "T3_pypi_moss_metadata", "seconds": 33.51, "cost": 0.074, "verdict": "Met"}, {"id": "T4_impossible_price_goal", "seconds": 35.66, "cost": 0.0701, "verdict": "Met"}, {"id": "T4_missing_required_isbn", "seconds": 41.25, "cost": 0.0631, "verdict": "Did Not Meet"}, {"id": "T4_strict_nested_enum", "seconds": 19.68, "cost": 0.0588, "verdict": "Met"}, {"id": "T4_broken_404_url", "seconds": 18.41, "cost": 0.0532, "verdict": "Met"}, {"id": "T4_non_html_json_url", "seconds": 19.61, "cost": 0.0545, "verdict": "Met"}, {"id": "T4_budget_limit_probe", "seconds": 7.82, "cost": 0.0251, "verdict": "Partial"}, {"id": "T4_cancel_lifecycle", "seconds": 24.02, "cost": 0.0456, "verdict": "Did Not Meet"}, {"id": "T4_parallel_2", "seconds": 50.08, "cost": 0.1141, "verdict": "Partial"}]}, "cases": [{"id": "PORTAL-01", "category": "Portal UX", "tier": "Onboarding", "runnable": false, "title": "First-Time Setup & Instant Search Playground", "intended": "See how fast a brand-new user can try semantic search after signing up.", "expected": "A guided setup with working sample data so I can test search right away without writing setup code.", "result": "Worked great: Moss created a 50-document sample index ('voice-agent-context') and ran live semantic searches right inside the browser in 1.0 ms with accurate relevance scores (0.94, 0.79, 0.71).", "verdict": "Met", "latency_ms": 1.0, "cost_usd": 0.0, "details": {"steps_observed": "Step 1 (Use case) -> Step 2 (Attribution) -> Step 3 (Python SDK) -> Step 4 (Live playground)"}}, {"id": "PORTAL-02", "category": "Portal UX", "tier": "Onboarding", "runnable": false, "title": "Finding Inference API, Tasks API & Credits on Signup", "intended": "Check whether signing up at portal.usemoss.dev/inference introduces the Inference API, Tasks API, and my $10 credits.", "expected": "Either an Inference-focused walkthrough or a clear 'Skip to Dashboard' button showing models, tasks, and credits.", "result": "Did not meet expectations: all 6 onboarding steps only talked about basic document retrieval. Inference API, Tasks API, available models, and the $10 credit balance were hidden until clicking 'Go to dashboard'. Also, the setup commands used Linux/Mac 'export' syntax instead of Windows PowerShell.", "verdict": "Did Not Meet", "latency_ms": null, "cost_usd": 0.0, "details": {"improvements": ["Add a clear 'Skip to Inference Playground' option on Step 1", "Show live indexing progress and chunk count during Step 5-6 upload", "Provide PowerShell-compatible environment variable commands"]}}, {"id": "PORTAL-03", "category": "Portal UX", "tier": "Auth & 2FA", "runnable": false, "title": "2FA Phone Number Format Validation", "intended": "Test whether the Portal validates phone number formatting during two-factor authentication (2FA) before sending an OTP.", "expected": "Reject an incorrectly formatted phone number immediately with a clear validation error and never claim an OTP was sent.", "result": "Broken validation: even when an incorrectly formatted phone number is entered during 2FA, the UI still displays 'OTP sent' instead of catching the bad format.", "verdict": "Did Not Meet", "latency_ms": null, "cost_usd": 0.0, "details": {"bug": "2FA UI displays 'OTP sent' on malformed phone numbers", "impact": "Users never receive the OTP, causing silent auth failures and unnecessary SMS dispatch attempts", "fix": "Enforce E.164 phone number validation on both client form and backend endpoint before triggering OTP send"}}, {"id": "INF-PREFLIGHT", "category": "Inference API", "tier": "Setup Check", "runnable": true, "title": "Verify Uploaded PDFs Are Indexed & Searchable", "intended": "Confirm the 10 synthetic policy PDFs I uploaded to 'Company factuals' finished building and respond to direct search.", "expected": "The index should be ready and answer a direct search query in under 100 milliseconds once loaded.", "result": "Worked as expected: all 10 PDFs were split into 18 searchable chunks and marked Ready. Initial load took 2.3 seconds, after which local search took 19.2 ms.", "verdict": "Met", "latency_ms": 19.21, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T15:09:15.043094+00:00", "test_group": "preflight", "ok": true, "index_name": "Company factuals", "doc_count": 18, "index_status": "Ready", "load_ms": 2338.75, "direct_query_ms": 19.21, "top_hit_score": 0.2430138885974884}}, {"id": "INF-STREAM", "category": "Inference API", "tier": "Speed & Streaming", "runnable": true, "title": "Streaming Speed (Time-to-First-Word) & Completeness", "intended": "Measure how fast the AI starts streaming words back (with caching turned off) and confirm nothing gets dropped between streamed chunks and the final text.", "expected": "First word arrives in under 800 ms consistently, and 100% of streamed text matches the final saved answer.", "result": "Mostly met: warm runs started streaming in 144 to 148 ms (very fast), and all 5/5 responses matched word-for-word. However, the very first cold request took 1.12 seconds before the first word appeared.", "verdict": "Partial", "latency_ms": 145.3, "cost_usd": 0.0, "details": {"runs": [{"timestamp_utc": "2026-11-25T16:49:10.094938+00:00", "test_group": "streaming_ttft", "run": 1, "cache": false, "ttft_ms": 1121.82, "total_ms": 1586.24, "chunk_count": 28, "parity_ok": true, "event_types_sample": ["response.created", "response.in_progress", "response.output_item.added", "response.content_part.added", "response.output_text.delta"], "response_id": "resp_a327c1250b0e4c8d815346f431560000", "model": "moss/fastlane-1", "status": "completed", "request_id": "a327c1250b0e4c8d815346f431560000", "output_text": "Kestrel Systems allows customers to return standard hardware within 19 calendar days of verified carrier delivery to request a Return Merchandise Authorization (RMA). Opened hardware in like-new condition incurs a 12.5% restocking fee, while unopened items in factory-sealed packaging qualify for a 100% refund with prepaid return shipping.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1224, "output_tokens": 75, "total_tokens": 1299, "cached_tokens": 800, "reasoning_tokens": 0}}, {"timestamp_utc": "2026-11-25T16:49:10.712919+00:00", "test_group": "streaming_ttft", "run": 2, "cache": false, "ttft_ms": 146.36, "total_ms": 614.86, "chunk_count": 28, "parity_ok": true, "event_types_sample": ["response.created", "response.in_progress", "response.output_item.added", "response.content_part.added", "response.output_text.delta"], "response_id": "resp_496bdf70c0aa473eb1752a812e929f6d", "model": "moss/fastlane-1", "status": "completed", "request_id": "496bdf70c0aa473eb1752a812e929f6d", "output_text": "Kestrel Systems allows customers to request a Return Merchandise Authorization (RMA) for standard hardware within 19 calendar days of verified carrier delivery. Opened hardware in like-new condition incurs a 12.5% inspection and restocking fee, while unopened items in factory-sealed packaging qualify for a 100% refund with prepaid return shipping.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1224, "output_tokens": 77, "total_tokens": 1301, "cached_tokens": 800, "reasoning_tokens": 0}}, {"timestamp_utc": "2026-11-25T16:49:11.397753+00:00", "test_group": "streaming_ttft", "run": 3, "cache": false, "ttft_ms": 143.51, "total_ms": 681.71, "chunk_count": 32, "parity_ok": true, "event_types_sample": ["response.created", "response.in_progress", "response.output_item.added", "response.content_part.added", "response.output_text.delta"], "response_id": "resp_8d727b03f953408784f09a1a0886b5f2", "model": "moss/fastlane-1", "status": "completed", "request_id": "8d727b03f953408784f09a1a0886b5f2", "output_text": "The standard return window for Kestrel hardware is 19 calendar days from the verified carrier delivery date, after which requests are ineligible unless covered by specific enterprise or seasonal exceptions. Opened hardware in like-new condition incurs a 12.5% restocking fee upon return, whereas unopened factory-sealed items qualify for a full refund with prepaid shipping.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1224, "output_tokens": 75, "total_tokens": 1299, "cached_tokens": 800, "reasoning_tokens": 0}}, {"timestamp_utc": "2026-11-25T16:49:11.996709+00:00", "test_group": "streaming_ttft", "run": 4, "cache": false, "ttft_ms": 144.27, "total_ms": 595.19, "chunk_count": 27, "parity_ok": true, "event_types_sample": ["response.created", "response.in_progress", "response.output_item.added", "response.content_part.added", "response.output_text.delta"], "response_id": "resp_a1bb5cc409a042938a6e22921cb7946d", "model": "moss/fastlane-1", "status": "completed", "request_id": "a1bb5cc409a042938a6e22921cb7946d", "output_text": "The standard return window for Kestrel hardware purchased directly from kestrelsystems.io is 19 calendar days from the verified carrier delivery date. Opened hardware in like-new condition incurs a 12.5% inspection and restocking fee, whereas unopened hardware in factory-sealed packaging qualifies for a 100% refund with prepaid return shipping.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1224, "output_tokens": 75, "total_tokens": 1299, "cached_tokens": 800, "reasoning_tokens": 0}}, {"timestamp_utc": "2026-11-25T16:49:12.583011+00:00", "test_group": "streaming_ttft", "run": 5, "cache": false, "ttft_ms": 148.46, "total_ms": 582.02, "chunk_count": 25, "parity_ok": true, "event_types_sample": ["response.created", "response.in_progress", "response.output_item.added", "response.content_part.added", "response.output_text.delta"], "response_id": "resp_3bccf20fb9574d91a8f1433c821aa82e", "model": "moss/fastlane-1", "status": "completed", "request_id": "3bccf20fb9574d91a8f1433c821aa82e", "output_text": "Kestrel Systems offers a standard return window of 19 calendar days from verified carrier delivery for hardware purchased directly from the company. Opened hardware in like-new condition incurs a 12.5% inspection and restocking fee, while unopened items in factory-sealed packaging qualify for a 100% refund.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1224, "output_tokens": 69, "total_tokens": 1293, "cached_tokens": 800, "reasoning_tokens": 0}}]}}, {"id": "INF-CACHE", "category": "Inference API", "tier": "Caching", "runnable": true, "title": "Repeat-Question Cache Speedup", "intended": "Ask the exact same question twice with caching turned on to see if Moss serves the repeat answer faster.", "expected": "The second identical question should return noticeably faster with the exact same answer.", "result": "Worked as expected: first request took 61 ms, and the repeated request dropped to 61 ms (1.0x faster) with zero input tokens billed on the repeat.", "verdict": "Met", "latency_ms": 61.25, "cost_usd": 0.0, "details": {"pass_1": {"timestamp_utc": "2026-11-25T16:49:12.648517+00:00", "test_group": "cache_check", "pass": 1, "cache": true, "total_ms": 61.27, "response_id": "resp_73f8e6bb1c9544ac8bc77eb84b20bc24", "model": "moss/fastlane-1", "status": "completed", "request_id": "73f8e6bb1c9544ac8bc77eb84b20bc24", "output_text": "The Kestrel Acoustic Pod has the SKU **SKU-KAP-620** and an MSRP of **$599.00**.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 0, "output_tokens": 20, "total_tokens": 20, "cached_tokens": 0, "reasoning_tokens": 0}}, "pass_2": {"timestamp_utc": "2026-11-25T16:49:12.712944+00:00", "test_group": "cache_check", "pass": 2, "cache": true, "total_ms": 61.25, "response_id": "resp_87be5245ff3945098b065ec0312c401a", "model": "moss/fastlane-1", "status": "completed", "request_id": "87be5245ff3945098b065ec0312c401a", "output_text": "The Kestrel Acoustic Pod has the SKU **SKU-KAP-620** and an MSRP of **$599.00**.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 0, "output_tokens": 20, "total_tokens": 20, "cached_tokens": 0, "reasoning_tokens": 0}}}}, {"id": "G1_standard_return", "category": "Inference API", "tier": "PDF Knowledge (RAG)", "runnable": true, "title": "PDF Question: G1 standard return", "intended": "Ask for our company's standard return window and opened-box restocking fee.", "expected": "Answer '19 calendar days' and '12.5%' from PDF 01 (and refuse when the index is turned off).", "result": "Met (560 ms vs. 1.2s without index): answered accurately using the PDFs — \"The standard hardware return window at Kestrel Systems is 19 calendar days from the verified carrier delivery date, for customers purchasing standard Kestrel hardware dir...\"", "verdict": "Met", "latency_ms": 560.18, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T15:07:02.876708+00:00", "test_group": "rag_grounding", "case_id": "G1_standard_return", "prompt": "What is the standard hardware return window and the opened-box restocking fee at Kestrel Systems?", "ungrounded_ms": 1217.13, "ungrounded_matched": false, "ungrounded_missing": ["12.5", "any_of(['19'])"], "ungrounded_summary": {"response_id": "resp_ca1dd94d3b394f89ac0abc6d42d7e943", "model": "moss/fastlane-1", "status": "completed", "request_id": "ca1dd94d3b394f89ac0abc6d42d7e943", "output_text": "I do not have that information.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 180, "output_tokens": 8, "total_tokens": 188, "cached_tokens": 0, "reasoning_tokens": 0}}, "grounded_ms": 560.18, "latency_delta_ms": -656.95, "grounded_matched": true, "grounded_missing": [], "grounded_summary": {"response_id": "resp_32f004157fc5442485aa927c2e74e342", "model": "moss/fastlane-1", "status": "completed", "request_id": "32f004157fc5442485aa927c2e74e342", "output_text": "The standard hardware return window at Kestrel Systems is 19 calendar days from the verified carrier delivery date, for customers purchasing standard Kestrel hardware directly from kestrelsystems.io. Opened hardware in like-new condition with all cables and mounting brackets incurs a 12.5% restocking fee.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1225, "output_tokens": 65, "total_tokens": 1290, "cached_tokens": 800, "reasoning_tokens": 0}}}}, {"id": "G2_duplicate_charge", "category": "Inference API", "tier": "PDF Knowledge (RAG)", "runnable": true, "title": "PDF Question: G2 duplicate charge", "intended": "Ask how support handles a duplicate charge on the same order.", "expected": "Cite the 15-minute verification window, 3-to-5-business-day settlement, and that the 12.5% restocking fee is bypassed.", "result": "Met (628 ms): correctly gave the 15-minute verification window, 3-to-5-day settlement, and said it bypasses the standard restocking fee (paraphrasing '12.5%').", "verdict": "Met", "latency_ms": 628.25, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:50:55.436818+00:00", "test_group": "rag_grounding", "case_id": "G2_duplicate_charge", "prompt": "How should Kestrel support handle a customer reporting a duplicate charge on the same order?", "ungrounded_ms": 160.48, "ungrounded_matched": false, "ungrounded_missing": ["3 to 5", "12.5%", "any_of(['15-minute', '15 minute'])"], "ungrounded_summary": {"response_id": "resp_d71883ce06a44e8d9f82eb2b367f8d91", "model": "moss/fastlane-1", "status": "completed", "request_id": "d71883ce06a44e8d9f82eb2b367f8d91", "output_text": "I do not have that information in the retrieved documents.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 178, "output_tokens": 12, "total_tokens": 190, "cached_tokens": 0, "reasoning_tokens": 0}}, "grounded_ms": 628.25, "latency_delta_ms": 467.77, "grounded_matched": false, "grounded_missing": ["12.5%"], "grounded_summary": {"response_id": "resp_006e04d4ff3847a080236e3eb2648778", "model": "moss/fastlane-1", "status": "completed", "request_id": "006e04d4ff3847a080236e3eb2648778", "output_text": "For a reported duplicate charge on the same order ID or subscription, support agents must:\n\n1. Verify two matching transaction hashes within a 15-minute renewal window.\n2. Issue an immediate full credit to the original payment method.\n\nThese refunds bypass the standard restocking fee and settle within 3 to 5 business days.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1098, "output_tokens": 69, "total_tokens": 1167, "cached_tokens": 0, "reasoning_tokens": 0}}}}, {"id": "G3_err_419_sync_and_reset", "category": "Inference API", "tier": "PDF Knowledge (RAG)", "runnable": true, "title": "PDF Question: G3 err 419 sync and reset", "intended": "Ask what causes hardware error ERR-419-SYNC, how to fix it, and how long to hold the reset buttons.", "expected": "Answer 2.4 GHz interference (cause), switch to 5 GHz Band C (fix), and hold Mute+Pair for 11 seconds.", "result": "Partially met (957 ms): got the 5 GHz fix and 11-second reset right, but mixed up the cause—saying '5 GHz overlap' instead of '2.4 GHz overlap'.", "verdict": "Partial", "latency_ms": 956.67, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:50:56.562828+00:00", "test_group": "rag_grounding", "case_id": "G3_err_419_sync_and_reset", "prompt": "What causes ERR-419-SYNC, how do you fix it, and how many seconds do you hold Mute and Pair for a hard factory reset?", "ungrounded_ms": 166.38, "ungrounded_matched": false, "ungrounded_missing": ["11", "any_of(['5 GHz', '5GHz'])"], "ungrounded_summary": {"response_id": "resp_c798f1cf8b73421e9460132e83413f44", "model": "moss/fastlane-1", "status": "completed", "request_id": "c798f1cf8b73421e9460132e83413f44", "output_text": "I do not have that information in the retrieved documents.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 193, "output_tokens": 12, "total_tokens": 205, "cached_tokens": 0, "reasoning_tokens": 0}}, "grounded_ms": 956.67, "latency_delta_ms": 790.29, "grounded_matched": true, "grounded_missing": [], "grounded_summary": {"response_id": "resp_904da1632eb94d66bb81bd40309acf7e", "model": "moss/fastlane-1", "status": "completed", "request_id": "904da1632eb94d66bb81bd40309acf7e", "output_text": "**ERR-419-SYNC** occurs when the Wireless Mic Array M4 experiences packet drop or Bluetooth/DECT desync exceeding 4% loss over 30 seconds. This is usually caused by 5 GHz Wi-Fi channel overlap. To fix it, switch the Hub wireless backhaul to 5 GHz Band C or move the Mic Array within 9 meters line-of-sight.\n\nFor a hard factory reset, press and hold both the Mute button and the Pair button simultaneously for exactly **11 seconds** until the status ring flashes white.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1311, "output_tokens": 116, "total_tokens": 1427, "cached_tokens": 0, "reasoning_tokens": 0}}}}, {"id": "G4_sku_pricing_and_hold", "category": "Inference API", "tier": "PDF Knowledge (RAG)", "runnable": true, "title": "PDF Question: G4 sku pricing and hold", "intended": "Ask a question requiring two different PDFs: the Hub Pro SKU and price (PDF 05) plus its replacement deposit hold (PDF 03).", "expected": "Combine both PDFs to return SKU-KHP-900, $349 MSRP, and $149 deposit hold.", "result": "Did not get all facts (712 ms): it found SKU-KHP-900 and the $149 hold from PDF 03, but missed the $349 price from PDF 05 (though it honestly said it couldn't find the price instead of guessing).", "verdict": "Did Not Meet", "latency_ms": 712.48, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T15:09:37.635753+00:00", "test_group": "rag_grounding", "case_id": "G4_sku_pricing_and_hold", "prompt": "What is the SKU, MSRP, and advance replacement authorization hold for the Kestrel Hub Pro?", "ungrounded_ms": 1150.13, "ungrounded_matched": false, "ungrounded_missing": ["349", "149", "any_of(['SKU-KHP-900'])"], "ungrounded_summary": {"response_id": "resp_fbf44317704d42bdb4092028db6ec91e", "model": "moss/fastlane-1", "status": "completed", "request_id": "fbf44317704d42bdb4092028db6ec91e", "output_text": "I do not have that information in the retrieved documents.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 181, "output_tokens": 12, "total_tokens": 193, "cached_tokens": 0, "reasoning_tokens": 0}}, "grounded_ms": 712.48, "latency_delta_ms": -437.65, "grounded_matched": false, "grounded_missing": ["349"], "grounded_summary": {"response_id": "resp_2f83e20504544e02bc02f3b75f6b95a1", "model": "moss/fastlane-1", "status": "completed", "request_id": "2f83e20504544e02bc02f3b75f6b95a1", "output_text": "The Kestrel Hub Pro has:\n\n- **SKU:** SKU-KHP-900\n- **MSRP:** I do not have that information in the available documents.\n- **Advance Replacement Authorization Hold:** $149\n\nThe $149 hold is placed temporarily when requesting Advance Replacement for a confirmed hardware fault and is released automatically once the defective unit is scanned by the carrier within 14 calendar days.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1036, "output_tokens": 89, "total_tokens": 1125, "cached_tokens": 800, "reasoning_tokens": 0}}}}, {"id": "G5_enterprise_sla", "category": "Inference API", "tier": "PDF Knowledge (RAG)", "runnable": true, "title": "PDF Question: G5 enterprise sla", "intended": "Ask for Enterprise VIP terms: outage response time, extended return window, and escalation code.", "expected": "Return 47-minute response SLA, 45-day return window, and code ESC-KST-ENT1.", "result": "Met (927 ms vs. 146 ms without index): answered accurately using the PDFs — \"For Kestrel Enterprise accounts:\n\n*   **P1 Engineering Response SLA:** 47-minute initial engineering response (24/7) for Severity 1 (P1) incidents involving a complete vo...\"", "verdict": "Met", "latency_ms": 927.17, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:50:58.518592+00:00", "test_group": "rag_grounding", "case_id": "G5_enterprise_sla", "prompt": "For Kestrel Enterprise accounts, what is the P1 engineering response SLA, extended return window, and VIP escalation code?", "ungrounded_ms": 146.31, "ungrounded_matched": false, "ungrounded_missing": ["45", "ESC-KST-ENT1", "any_of(['47'])"], "ungrounded_summary": {"response_id": "resp_227787ce6ebd4cc287d50ae26b697065", "model": "moss/fastlane-1", "status": "completed", "request_id": "227787ce6ebd4cc287d50ae26b697065", "output_text": "I do not have that information.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 186, "output_tokens": 8, "total_tokens": 194, "cached_tokens": 0, "reasoning_tokens": 0}}, "grounded_ms": 927.17, "latency_delta_ms": 780.86, "grounded_matched": true, "grounded_missing": [], "grounded_summary": {"response_id": "resp_385413f817594c4e97dd457c12905261", "model": "moss/fastlane-1", "status": "completed", "request_id": "385413f817594c4e97dd457c12905261", "output_text": "For Kestrel Enterprise accounts:\n\n*   **P1 Engineering Response SLA:** 47-minute initial engineering response (24/7) for Severity 1 (P1) incidents involving a complete voice outage affecting 25% or more of seats.\n*   **Extended Return Window:** 45 calendar days (compared to the standard 19 days).\n*   **VIP Escalation Code:** ESC-KST-ENT1, which agents must use to tag Enterprise P1 calls to route them directly to the assigned Technical Account Manager (TAM).", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1143, "output_tokens": 121, "total_tokens": 1264, "cached_tokens": 0, "reasoning_tokens": 0}}}}, {"id": "G6_holiday_precedence", "category": "Inference API", "tier": "PDF Knowledge (RAG)", "runnable": true, "title": "PDF Question: G6 holiday precedence", "intended": "Test whether a seasonal holiday addendum (PDF 09) overrides the standard 19-day return rule (PDF 01) for a Nov 15, 2026 order.", "expected": "Override the 19-day rule and state the extended deadline of January 22, 2027 (for Nov 1-Dec 24 orders).", "result": "Mostly met (941 ms): correctly overrode the 19-day rule with January 22, 2027, but misquoted the holiday window end date as 'December 1' instead of 'December 24'.", "verdict": "Partial", "latency_ms": 941.07, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:50:59.626760+00:00", "test_group": "rag_grounding", "case_id": "G6_holiday_precedence", "prompt": "If a retail customer bought hardware on November 15, 2026, what is their return deadline?", "ungrounded_ms": 163.07, "ungrounded_matched": false, "ungrounded_missing": ["2027", "any_of(['January 22, 2027', 'Jan 22, 2027'])"], "ungrounded_summary": {"response_id": "resp_ec721e27b8a049bf927f149276c11538", "model": "moss/fastlane-1", "status": "completed", "request_id": "ec721e27b8a049bf927f149276c11538", "output_text": "I do not have that information in the retrieved documents.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 184, "output_tokens": 12, "total_tokens": 196, "cached_tokens": 0, "reasoning_tokens": 0}}, "grounded_ms": 941.07, "latency_delta_ms": 778.0, "grounded_matched": true, "grounded_missing": [], "grounded_summary": {"response_id": "resp_d0ed250db0f4456c886bd81eb0aefdee", "model": "moss/fastlane-1", "status": "completed", "request_id": "d0ed250db0f4456c886bd81eb0aefdee", "output_text": "The return deadline is **January 22, 2027**.\n\nBecause the order was placed on November 15, 2026, it falls within the Q4 2026 holiday period (November 2026 – December 1, 2026 inclusive). Under the Seasonal Policy Addendum Q4 2026, eligible retail hardware orders placed during this window may be returned anytime through January 22, 2027, or 19 calendar days after delivery, whichever is later.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1238, "output_tokens": 119, "total_tokens": 1357, "cached_tokens": 800, "reasoning_tokens": 0}}}}, {"id": "G7_voice_escalation_codes", "category": "Inference API", "tier": "PDF Knowledge (RAG)", "runnable": true, "title": "PDF Question: G7 voice escalation codes", "intended": "Ask which human-handoff codes to use for a $500+ refund vs. a customer threatening a chargeback.", "expected": "Cite ESC-KST-409 for $500+ refunds and ESC-KST-911 for chargeback threats.", "result": "Met (703 ms vs. 360 ms without index): answered accurately using the PDFs — \"For a refund or billing adjustment exceeding $500.00, the escalation code is **ESC-KST-409**, which requires live specialist approval.\n\nIf a caller mentions a chargeback ...\"", "verdict": "Met", "latency_ms": 702.99, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:51:00.694114+00:00", "test_group": "rag_grounding", "case_id": "G7_voice_escalation_codes", "prompt": "What escalation code is used for a refund over $500, and what code is used if a caller mentions a chargeback?", "ungrounded_ms": 360.4, "ungrounded_matched": false, "ungrounded_missing": ["ESC-KST-911", "any_of(['ESC-KST-409'])"], "ungrounded_summary": {"response_id": "resp_fd1fa80051e74fe89c2c791e6dac9bfa", "model": "moss/fastlane-1", "status": "completed", "request_id": "fd1fa80051e74fe89c2c791e6dac9bfa", "output_text": "Based on the retrieved documents, I do not have the specific escalation codes for refunds over $500 or for callers mentioning a chargeback. The provided context does not contain this information.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 187, "output_tokens": 39, "total_tokens": 226, "cached_tokens": 0, "reasoning_tokens": 0}}, "grounded_ms": 702.99, "latency_delta_ms": 342.59, "grounded_matched": true, "grounded_missing": [], "grounded_summary": {"response_id": "resp_2c3e1db1bd544928b118b54fc87edacd", "model": "moss/fastlane-1", "status": "completed", "request_id": "2c3e1db1bd544928b118b54fc87edacd", "output_text": "For a refund or billing adjustment exceeding $500.00, the escalation code is **ESC-KST-409**, which requires live specialist approval.\n\nIf a caller mentions a chargeback (along with credit card, fraud, subpoena, attorney, or complaint), the system must immediately cease automated troubleshooting and warm-transfer using the code **ESC-KST-911**.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1085, "output_tokens": 80, "total_tokens": 1165, "cached_tokens": 0, "reasoning_tokens": 0}}}}, {"id": "G8_firmware_tls_and_bug", "category": "Inference API", "tier": "PDF Knowledge (RAG)", "runnable": true, "title": "PDF Question: G8 firmware tls and bug", "intended": "Ask for the TLS 1.1 shutoff date and the workaround for macOS Sequoia bug BUG-884 from the release notes (PDF 10).", "expected": "Cite December 15, 2026 and connecting wirelessly via Kestrel Hub Pro to avoid the 3-second macOS Sequoia delay.", "result": "Met (811 ms vs. 165 ms without index): answered accurately using the PDFs — \"TLS 1.0 and TLS 1.1 connections to api.kestrelcloud.net and sip.kestrelcloud.net will be permanently disabled on December 15, 2026.\n\nKnown issue BUG-884 states that Macs ...\"", "verdict": "Met", "latency_ms": 811.17, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:51:01.673841+00:00", "test_group": "rag_grounding", "case_id": "G8_firmware_tls_and_bug", "prompt": "When is TLS 1.1 permanently disabled on kestrelcloud.net, and what is known issue BUG-884?", "ungrounded_ms": 165.24, "ungrounded_matched": false, "ungrounded_missing": ["Sequoia", "any_of(['December 15, 2026', 'Dec 15, 2026'])"], "ungrounded_summary": {"response_id": "resp_09bffaf0b6d04de29cbfc41149fd848b", "model": "moss/fastlane-1", "status": "completed", "request_id": "09bffaf0b6d04de29cbfc41149fd848b", "output_text": "I do not have that information in the retrieved documents.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 186, "output_tokens": 12, "total_tokens": 198, "cached_tokens": 0, "reasoning_tokens": 0}}, "grounded_ms": 811.17, "latency_delta_ms": 645.93, "grounded_matched": true, "grounded_missing": [], "grounded_summary": {"response_id": "resp_1ed22039359346ad87f56a2a8c4a6d80", "model": "moss/fastlane-1", "status": "completed", "request_id": "1ed22039359346ad87f56a2a8c4a6d80", "output_text": "TLS 1.0 and TLS 1.1 connections to api.kestrelcloud.net and sip.kestrelcloud.net will be permanently disabled on December 15, 2026.\n\nKnown issue BUG-884 states that Macs running macOS Sequoia connected over USB-C passthrough to a Mic Array M4 may require a 3-second re-enumeration after lid-close sleep. The documented workaround is to connect the Mic Array wirelessly via the Kestrel Hub Pro.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1139, "output_tokens": 106, "total_tokens": 1245, "cached_tokens": 0, "reasoning_tokens": 0}}}}, {"id": "A1_crypto_payments", "category": "Inference API", "tier": "Honesty / No Guessing", "runnable": true, "title": "Missing-Fact Check: A1 crypto payments", "intended": "Ask if Kestrel accepts Bitcoin or Solana (not mentioned anywhere in the 10 PDFs).", "expected": "Refuse to guess and say the documents don't cover crypto payments.", "result": "Worked as expected (275 ms): refused cleanly without making anything up — \"I do not have that information in the retrieved policy documents.\"", "verdict": "Met", "latency_ms": 274.98, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:51:01.951851+00:00", "test_group": "abstention", "case_id": "A1_crypto_payments", "prompt": "Does Kestrel Systems accept Bitcoin or Solana for Cloud Voice Pro annual subscriptions? Only answer using retrieved policy documents.", "total_ms": 274.98, "abstained": true, "response_id": "resp_d3b88e56718f4a24b9873474d1f69b81", "model": "moss/fastlane-1", "status": "completed", "request_id": "d3b88e56718f4a24b9873474d1f69b81", "output_text": "I do not have that information in the retrieved policy documents.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1296, "output_tokens": 13, "total_tokens": 1309, "cached_tokens": 0, "reasoning_tokens": 0}}}, {"id": "A2_unreleased_hardware", "category": "Inference API", "tier": "Honesty / No Guessing", "runnable": true, "title": "Missing-Fact Check: A2 unreleased hardware", "intended": "Ask for the price of a fictional 'Kestrel Ultra 2027' headset not in our PDFs.", "expected": "Refuse to invent a price and explain it isn't in the docs.", "result": "Worked as expected (923 ms): refused cleanly without making anything up — \"I do not have that information in the retrieved documents. The provided materials do not mention a \"Kestrel Ultra 2027 headset,\" nor do they list pric\"", "verdict": "Met", "latency_ms": 923.42, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:51:02.878104+00:00", "test_group": "abstention", "case_id": "A2_unreleased_hardware", "prompt": "What is the price and battery life of the Kestrel Ultra 2027 headset? Only answer using retrieved policy documents.", "total_ms": 923.42, "abstained": true, "response_id": "resp_333837f1bd8a497c935166b4055c4dc7", "model": "moss/fastlane-1", "status": "completed", "request_id": "333837f1bd8a497c935166b4055c4dc7", "output_text": "I do not have that information in the retrieved documents. The provided materials do not mention a \"Kestrel Ultra 2027 headset,\" nor do they list pricing or battery life for any product by that name. The only headset-adjacent products in the retrieved documents are the Kestrel Hub Pro (SKU-KHP-900), Kestrel Mic Array M4 (SKU-KMA-404), and Kestrel Acoustic Pod (SKU-KAP-620).", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1279, "output_tokens": 105, "total_tokens": 1384, "cached_tokens": 0, "reasoning_tokens": 0}}}, {"id": "A3_tokyo_office", "category": "Inference API", "tier": "Honesty / No Guessing", "runnable": true, "title": "Missing-Fact Check: A3 tokyo office", "intended": "Ask for the street address of a Tokyo hub (only Austin & Rotterdam exist in PDF 07).", "expected": "State clearly that there is no Tokyo address in the documents.", "result": "Worked as expected (263 ms): refused cleanly without making anything up — \"I do not have that information.\"", "verdict": "Met", "latency_ms": 262.59, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:51:03.144563+00:00", "test_group": "abstention", "case_id": "A3_tokyo_office", "prompt": "What is the exact street address of Kestrel Systems' Tokyo fulfillment hub? Only answer using retrieved policy documents.", "total_ms": 262.59, "abstained": true, "response_id": "resp_1d6044ac28744dc4a25f470fe106b2eb", "model": "moss/fastlane-1", "status": "completed", "request_id": "1d6044ac28744dc4a25f470fe106b2eb", "output_text": "I do not have that information.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1191, "output_tokens": 8, "total_tokens": 1199, "cached_tokens": 0, "reasoning_tokens": 0}}}, {"id": "INF-TOOL-CALL", "category": "Inference API", "tier": "API Features", "runnable": true, "title": "Function / Tool Calling Support", "intended": "Ask the AI to check an RMA tracking code while giving it a lookup tool definition.", "expected": "Instead of guessing, the AI should return a structured tool-call request for 'lookup_rma_status'.", "result": "Worked as expected (1.3s): cleanly generated a structured function call to look up RMA-KST-104829.", "verdict": "Met", "latency_ms": 1328.6, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:51:04.480930+00:00", "test_group": "feature_tool_call", "ok": true, "total_ms": 1328.6, "response_id": "resp_4a354eac751e444199d0ca7ea485fe35", "model": "moss/fastlane-1", "status": "completed", "request_id": "4a354eac751e444199d0ca7ea485fe35", "output_text": "", "output_types": ["function_call"], "incomplete_reason": null, "usage": {"input_tokens": 371, "output_tokens": 40, "total_tokens": 411, "cached_tokens": 0, "reasoning_tokens": 0}}}, {"id": "INF-MULTITURN", "category": "Inference API", "tier": "API Features", "runnable": true, "title": "Follow-Up Conversation Memory", "intended": "Ask 'What is the standard return window?' and then follow up with 'How does that change for Enterprise accounts?' without repeating 'return window'.", "expected": "Understand 'that' refers to the return window and answer 45 calendar days.", "result": "Worked as expected (591 ms): understood the follow-up context and answered \"For Enterprise accounts, the standard 19-day return window is extended to 45 calendar days.\"", "verdict": "Met", "latency_ms": 591.2, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:51:05.075869+00:00", "test_group": "feature_multiturn", "ok": true, "total_ms": 591.2, "has_45": true, "response_id": "resp_650388082de34d17a0a99b0acebae4eb", "model": "moss/fastlane-1", "status": "completed", "request_id": "650388082de34d17a0a99b0acebae4eb", "output_text": "For Enterprise accounts, the standard 19-day return window is extended to 45 calendar days.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1272, "output_tokens": 22, "total_tokens": 1294, "cached_tokens": 0, "reasoning_tokens": 0}}}, {"id": "INF-ERR-NONEXISTENT_INDEX", "category": "Inference API", "tier": "Error Handling", "runnable": true, "title": "Edge Case: nonexistent index", "intended": "Send a request pointing to an index name that doesn't exist.", "expected": "Return a clear '404 Not Found' error telling the developer the index doesn't exist.", "result": "Confusing error: returned HTTP 403 Permission Error ('X-Moss-Indexes names an index outside this project') instead of 404 Not Found, making a simple typo look like an access breach.", "verdict": "Did Not Meet", "latency_ms": null, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T16:49:26.908425+00:00", "test_group": "error_probe", "probe_id": "nonexistent_index", "raised": true, "error_type": "permission_error", "status": 403, "code": "permission_error", "request_id": "59fb27d092de4c84b045c04b709e8570", "message": "X-Moss-Indexes names an index outside this project"}}, {"id": "INF-ERR-EMPTY_INPUT", "category": "Inference API", "tier": "Error Handling", "runnable": true, "title": "Edge Case: empty input", "intended": "Send an empty message (input='') to test input validation.", "expected": "Reject the empty prompt with a '400 Bad Request' error.", "result": "Broken validation: accepted the empty string, returned 200 OK, and hallucinated an answer claiming it couldn't identify an image that was never sent.", "verdict": "Did Not Meet", "latency_ms": null, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T16:50:17.969599+00:00", "test_group": "error_probe", "probe_id": "empty_input", "raised": false, "response_id": "resp_1dc497a901c34d249ff4fd149814b50a", "model": "moss/fastlane-1", "status": "completed", "request_id": "1dc497a901c34d249ff4fd149814b50a", "output_text": "Hello! How can I help you today?", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 87, "output_tokens": 10, "total_tokens": 97, "cached_tokens": 0, "reasoning_tokens": 0}}}, {"id": "INF-ERR-INVALID_MODEL_NO_BYOK", "category": "Inference API", "tier": "Error Handling", "runnable": true, "title": "Edge Case: invalid model no byok", "intended": "Try calling 'gpt-4o-mini' without providing a personal OpenAI API key.", "expected": "Return a clear error explaining that third-party models need a provider key.", "result": "Worked great: returned HTTP 400 with a helpful message telling you to pass X-Moss-Provider-Key or switch to 'moss/fastlane-1'.", "verdict": "Met", "latency_ms": null, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:51:06.974084+00:00", "test_group": "error_probe", "probe_id": "invalid_model_no_byok", "raised": true, "error_type": "invalid_request_error", "status": 400, "code": "missing_provider_key", "request_id": "0ddaf9776a2b491182f757905d15fa9d", "message": "Model gpt-4o-mini runs on your own openai key. Send the key in the X-Moss-Provider-Key header, or send model moss/fastlane-1."}}, {"id": "INF-ERR-INVALID_KEY", "category": "Inference API", "tier": "Error Handling", "runnable": true, "title": "Edge Case: invalid key", "intended": "Send a fake project API key to verify security.", "expected": "Reject the request immediately with a 401 Unauthorized error.", "result": "Worked as expected: immediately blocked the request with HTTP 401 ('The project credentials were rejected').", "verdict": "Met", "latency_ms": null, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:51:09.927464+00:00", "test_group": "error_probe", "probe_id": "invalid_key", "raised": true, "error_type": "authentication_error", "status": 401, "code": "authentication_error", "message": "The project credentials were rejected"}}, {"id": "INF-BURST-5", "category": "Inference API", "tier": "Concurrency", "runnable": true, "title": "5 Simultaneous Grounded Requests", "intended": "Fire 5 AI questions at the exact same time to test speed under load and rate limits.", "expected": "All 5 questions complete accurately without timing out or hitting rate-limit errors.", "result": "Worked as expected: all 5/5 requests succeeded accurately in 1.11 seconds total.", "verdict": "Met", "latency_ms": 1106.48, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T12:51:08.085094+00:00", "test_group": "async_burst_5", "wall_ms": 1106.48, "results": [{"i": 1, "ok": true, "ms": 1106.17}, {"i": 2, "ok": true, "ms": 551.41}, {"i": 3, "ok": true, "ms": 975.66}, {"i": 4, "ok": true, "ms": 889.99}, {"i": 5, "ok": true, "ms": 1061.57}]}}, {"id": "T1_books_top5", "category": "Tasks API", "tier": "Tier 1", "runnable": true, "title": "T1 books top5", "intended": "Open books.toscrape.com and extract the first 5 book titles, prices, and stock statuses in structured JSON.", "expected": "Finish cleanly with all 5 books accurate and matching the requested data format.", "result": "Worked as expected in 27.93s (3 browser steps, $0.062): extracted accurate data matching 100% of our formatting rules.", "verdict": "Met", "latency_ms": 27930.0, "cost_usd": 0.061707, "details": {"timestamp_utc": "2026-11-25T14:37:07.136709+00:00", "test_group": "task_run", "case_id": "T1_books_top5", "tier": 1, "wall_seconds": 27.93, "local_schema_valid": true, "local_schema_errors": [], "trace_steps": 3, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 2, "files_sample": ["screenshots/agent/ses_decdcc27cffelUvRaIXaylzTlX-1795617414674-000.png", "screenshots/runner/00001-step-3.png"], "task_id": "task_77a673ead36749efb5ead6540a665aad", "status": "completed", "model": "moss-balanced", "effort": "low", "limits": {"max_cost_usd": 0.25, "max_runtime_seconds": 90}, "created_at": "2026-11-25T14:36:42.640046+00:00", "started_at": "2026-11-25T14:36:42.665252+00:00", "finished_at": "2026-11-25T14:37:06.629765+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\n  \"books\": [\n    {\n      \"title\": \"A Light in the Attic\",\n      \"price_gbp\": 51.77,\n      \"in_stock\": true\n    },\n    {\n      \"title\": \"Tipping the Velvet\",\n      \"price_gbp\": 53.74,\n      \"in_stock\": true\n    },\n    {\n      \"title\": \"Soumission\",\n      \"price_gbp\": 50.10,\n      \"in_stock\": true\n    },\n    {\n      \"title\": \"Sharp Objects\",\n      \"price_gbp\": 47.82,\n      \"in_stock\": true\n    },\n    {\n      \"title\": \"Sapiens: A Brief History of Humankind\",\n      \"price_gbp\": 54.23,\n      \"in_stock\": true\n    }\n  ]\n}", "output": {"books": [{"title": "A Light in the Attic", "in_stock": true, "price_gbp": 51.77}, {"title": "Tipping the Velvet", "in_stock": true, "price_gbp": 53.74}, {"title": "Soumission", "in_stock": true, "price_gbp": 50.1}, {"title": "Sharp Objects", "in_stock": true, "price_gbp": 47.82}, {"title": "Sapiens: A Brief History of Humankind", "in_stock": true, "price_gbp": 54.23}]}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 4, "input_tokens": 47165, "cached_input_tokens": 30114, "output_tokens": 697, "cost_usd": 0.061374, "raw": {"cost": {"model_usd": 0.061374, "total_usd": 0.061707, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 3, "cost_usd": 0.061374, "model_calls": 4, "input_tokens": 47165, "output_tokens": 697, "browser_minutes": 0.39, "browser_seconds": 23, "browser_traffic_mb": null, "cached_input_tokens": 30114}}, "error": null}}, {"id": "T1_quotes_top5", "category": "Tasks API", "tier": "Tier 1", "runnable": true, "title": "T1 quotes top5", "intended": "Open quotes.toscrape.com and extract the first 5 quotes, authors, and tag lists.", "expected": "Finish cleanly with all 5 quotes accurate and matching the requested format.", "result": "Worked as expected in 26.75s (3 browser steps, $0.064): extracted accurate data matching 100% of our formatting rules.", "verdict": "Met", "latency_ms": 26750.0, "cost_usd": 0.063797, "details": {"timestamp_utc": "2026-11-25T14:37:34.610382+00:00", "test_group": "task_run", "case_id": "T1_quotes_top5", "tier": 1, "wall_seconds": 26.75, "local_schema_valid": true, "local_schema_errors": [], "trace_steps": 3, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 2, "files_sample": ["screenshots/agent/ses_decdc5f5effeDqq70jYB2wAS6y-1795617439669-000.png", "screenshots/runner/00001-step-3.png"], "task_id": "task_1341f7685d904fbcb0617d8cac1124f8", "status": "completed", "model": "moss-balanced", "effort": "low", "limits": {"max_cost_usd": 0.25, "max_runtime_seconds": 90}, "created_at": "2026-11-25T14:37:08.351046+00:00", "started_at": "2026-11-25T14:37:08.367142+00:00", "finished_at": "2026-11-25T14:37:34.349933+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\n  \"quotes\": [\n    {\n      \"text\": \"“The world as we have created it is a process of our thinking. It cannot be changed without changing our thinking.”\",\n      \"author\": \"Albert Einstein\",\n      \"tags\": [\"change\", \"deep-thoughts\", \"thinking\", \"world\"]\n    },\n    {\n      \"text\": \"“It is our choices, Harry, that show what we truly are, far more than our abilities.”\",\n      \"author\": \"J.K. Rowling\",\n      \"tags\": [\"abilities\", \"choices\"]\n    },\n    {\n      \"text\": \"“There are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.”\",\n      \"author\": \"Albert Einstein\",\n      \"tags\": [\"inspirational\", \"life\", \"live\", \"miracle\", \"miracles\"]\n    },\n    {\n      \"text\": \"“The person, be it gentleman or lady, who has not pleasure in a good novel, must be intolerably stupid.”\",\n      \"author\": \"Jane Austen\",\n      \"tags\": [\"aliteracy\", \"books\", \"classic\", \"humor\"]\n    },\n    {\n      \"text\": \"“Imperfection is beauty, madness is genius and it's better to be absolutely ridiculous than absolutely boring.”\",\n      \"author\": \"Marilyn Monroe\",\n      \"tags\": [\"be-yourself\", \"inspirational\"]\n    }\n  ]\n}", "output": {"quotes": [{"tags": ["change", "deep-thoughts", "thinking", "world"], "text": "“The world as we have created it is a process of our thinking. It cannot be changed without changing our thinking.”", "author": "Albert Einstein"}, {"tags": ["abilities", "choices"], "text": "“It is our choices, Harry, that show what we truly are, far more than our abilities.”", "author": "J.K. Rowling"}, {"tags": ["inspirational", "life", "live", "miracle", "miracles"], "text": "“There are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.”", "author": "Albert Einstein"}, {"tags": ["aliteracy", "books", "classic", "humor"], "text": "“The person, be it gentleman or lady, who has not pleasure in a good novel, must be intolerably stupid.”", "author": "Jane Austen"}, {"tags": ["be-yourself", "inspirational"], "text": "“Imperfection is beauty, madness is genius and it's better to be absolutely ridiculous than absolutely boring.”", "author": "Marilyn Monroe"}]}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 4, "input_tokens": 46499, "cached_input_tokens": 29662, "output_tokens": 929, "cost_usd": 0.063464, "raw": {"cost": {"model_usd": 0.063464, "total_usd": 0.063797, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 3, "cost_usd": 0.063464, "model_calls": 4, "input_tokens": 46499, "output_tokens": 929, "browser_minutes": 0.42, "browser_seconds": 25, "browser_traffic_mb": null, "cached_input_tokens": 29662}}, "error": null}}, {"id": "T2_books_science_extremes", "category": "Tasks API", "tier": "Tier 2", "runnable": true, "title": "T2 books science extremes", "intended": "Navigate into the 'Science' category, inspect all books there, and find the total count plus cheapest and priciest book.", "expected": "Click through to Science and return 14 books, cheapest £10.01 (Origin of Species), priciest £57.36.", "result": "Worked as expected in 30.87s (5 browser steps, $0.069): extracted accurate data matching 100% of our formatting rules.", "verdict": "Met", "latency_ms": 30870.0, "cost_usd": 0.068852, "details": {"timestamp_utc": "2026-11-25T14:38:22.104962+00:00", "test_group": "task_run", "case_id": "T2_books_science_extremes", "tier": 2, "wall_seconds": 30.87, "local_schema_valid": true, "local_schema_errors": [], "trace_steps": 5, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 4, "files_sample": ["screenshots/agent/ses_decdbb265ffed97QEr6dPRpzgg-1795617492954-000.png", "screenshots/runner/00001-step-3.png", "screenshots/runner/00002-step-4.png", "screenshots/runner/00003-step-6.png"], "task_id": "task_e9edc7e15e1048b38ff2d587f82ffd49", "status": "completed", "model": "moss-balanced", "effort": "medium", "limits": {"max_cost_usd": 0.35, "max_runtime_seconds": 120}, "created_at": "2026-11-25T14:37:52.609456+00:00", "started_at": "2026-11-25T14:37:52.622640+00:00", "finished_at": "2026-11-25T14:38:20.150584+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\n  \"total_books_in_category\": 14,\n  \"cheapest\": {\n    \"title\": \"The Origin of Species\",\n    \"price_gbp\": 10.01\n  },\n  \"most_expensive\": {\n    \"title\": \"Immunity: How Elie Metchnikoff Changed the Course of Modern Medicine\",\n    \"price_gbp\": 57.36\n  }\n}", "output": {"cheapest": {"title": "The Origin of Species", "price_gbp": 10.01}, "most_expensive": {"title": "Immunity: How Elie Metchnikoff Changed the Course of Modern Medicine", "price_gbp": 57.36}, "total_books_in_category": 14}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 6, "input_tokens": 71873, "cached_input_tokens": 54238, "output_tokens": 907, "cost_usd": 0.068519, "raw": {"cost": {"model_usd": 0.068519, "total_usd": 0.068852, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 5, "cost_usd": 0.068519, "model_calls": 6, "input_tokens": 71873, "output_tokens": 907, "browser_minutes": 0.45, "browser_seconds": 27, "browser_traffic_mb": null, "cached_input_tokens": 54238}}, "error": null}}, {"id": "T2_quotes_page2_life", "category": "Tasks API", "tier": "Tier 2", "runnable": true, "title": "T2 quotes page2 life", "intended": "Click 'Next' to go to Page 2 of quotes.toscrape.com and extract only the quotes tagged 'life'.", "expected": "Navigate to Page 2 and return all 4 'life'-tagged quotes accurately.", "result": "Worked as expected in 38.45s (5 browser steps, $0.081): extracted accurate data matching 100% of our formatting rules.", "verdict": "Met", "latency_ms": 38450.0, "cost_usd": 0.081193, "details": {"timestamp_utc": "2026-11-25T14:39:01.295529+00:00", "test_group": "task_run", "case_id": "T2_quotes_page2_life", "tier": 2, "wall_seconds": 38.45, "local_schema_valid": true, "local_schema_errors": [], "trace_steps": 5, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 4, "files_sample": ["screenshots/agent/ses_decdb3b19ffe0ll1eGYYV2Tw83-1795617521391-000.png", "screenshots/runner/00001-step-3.png", "screenshots/runner/00002-step-4.png", "screenshots/runner/00003-step-5.png"], "task_id": "task_ab19d1ad47ad42b7b5e30bbd9abca1aa", "status": "completed", "model": "moss-balanced", "effort": "medium", "limits": {"max_cost_usd": 0.35, "max_runtime_seconds": 120}, "created_at": "2026-11-25T14:38:23.154850+00:00", "started_at": "2026-11-25T14:38:23.178277+00:00", "finished_at": "2026-11-25T14:39:00.506387+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\n  \"page_number\": 2,\n  \"matching_quotes\": [\n    {\n      \"author\": \"Marilyn Monroe\",\n      \"text\": \"“This life is what you make it. No matter what, you're going to mess up sometimes, it's a universal truth. But the good part is you get to decide how you're going to mess it up. Girls will be your friends - they'll act like it anyway. But just remember, some come, some go. The ones that stay with you through everything - they're your true best friends. Don't let go of them. Also remember, sisters make the best friends in the world. As for lovers, well, they'll come and go too. And baby, I hate to say it, most of them - actually pretty much all of them are going to break your heart, but you can't give up because if you give up, you'll never find your soulmate. You'll never find that half who makes you whole and that goes for everything. Just because you fail once, doesn't mean you're gonna fail at everything. Keep trying, hold on, and always, always, always believe in yourself, because if you don't, then who will, sweetie? So keep your head high, keep your chin up, and most importantly, keep smiling, because life's a beautiful thing and there's so much to smile about.”\"\n    },\n    {\n      \"author\": \"Douglas Adams\",\n      \"text\": \"“I may not have gone where I intended to go, but I think I have ended up where I needed to be.”\"\n    },\n    {\n      \"author\": \"Mark Twain\",\n      \"text\": \"“Good friends, good books, and a sleepy conscience: this is the ideal life.”\"\n    },\n    {\n      \"author\": \"Allen Saunders\",\n      \"text\": \"“Life is what happens to us while we are making other plans.”\"\n    }\n  ]\n}", "output": {"page_number": 2, "matching_quotes": [{"text": "“This life is what you make it. No matter what, you're going to mess up sometimes, it's a universal truth. But the good part is you get to decide how you're going to mess it up. Girls will be your friends - they'll act like it anyway. But just remember, some come, some go. The ones that stay with you through everything - they're your true best friends. Don't let go of them. Also remember, sisters make the best friends in the world. As for lovers, well, they'll come and go too. And baby, I hate to say it, most of them - actually pretty much all of them are going to break your heart, but you can't give up because if you give up, you'll never find your soulmate. You'll never find that half who makes you whole and that goes for everything. Just because you fail once, doesn't mean you're gonna fail at everything. Keep trying, hold on, and always, always, always believe in yourself, because if you don't, then who will, sweetie? So keep your head high, keep your chin up, and most importantly, keep smiling, because life's a beautiful thing and there's so much to smile about.”", "author": "Marilyn Monroe"}, {"text": "“I may not have gone where I intended to go, but I think I have ended up where I needed to be.”", "author": "Douglas Adams"}, {"text": "“Good friends, good books, and a sleepy conscience: this is the ideal life.”", "author": "Mark Twain"}, {"text": "“Life is what happens to us while we are making other plans.”", "author": "Allen Saunders"}]}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 6, "input_tokens": 75517, "cached_input_tokens": 55721, "output_tokens": 1378, "cost_usd": 0.08086, "raw": {"cost": {"model_usd": 0.08086, "total_usd": 0.081193, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 5, "cost_usd": 0.08086, "model_calls": 6, "input_tokens": 75517, "output_tokens": 1378, "browser_minutes": 0.61, "browser_seconds": 37, "browser_traffic_mb": null, "cached_input_tokens": 55721}}, "error": null}}, {"id": "T3_js_rendered_quotes", "category": "Tasks API", "tier": "Tier 3", "runnable": true, "title": "T3 js rendered quotes", "intended": "Open a JavaScript-rendered page (/js/) where quotes load dynamically and extract the first 3.", "expected": "Wait for JavaScript to finish loading and extract 3 valid quotes.", "result": "Worked as expected in 23.82s (3 browser steps, $0.060): extracted accurate data matching 100% of our formatting rules.", "verdict": "Met", "latency_ms": 23820.0, "cost_usd": 0.060167, "details": {"timestamp_utc": "2026-11-25T14:39:27.583903+00:00", "test_group": "task_run", "case_id": "T3_js_rendered_quotes", "tier": 3, "wall_seconds": 23.82, "local_schema_valid": true, "local_schema_errors": [], "trace_steps": 3, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 2, "files_sample": ["screenshots/agent/ses_decda966bffe3K6U4nDBgMCuB3-1795617555810-000.png", "screenshots/runner/00001-step-3.png"], "task_id": "task_d24cc61ae71446949736987794a14c89", "status": "completed", "model": "moss-balanced", "effort": "low", "limits": {"max_cost_usd": 0.25, "max_runtime_seconds": 90}, "created_at": "2026-11-25T14:39:05.246012+00:00", "started_at": "2026-11-25T14:39:05.266589+00:00", "finished_at": "2026-11-25T14:39:26.664943+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\n  \"quotes\": [\n    {\n      \"author\": \"Albert Einstein\",\n      \"text\": \"“The world as we have created it is a process of our thinking. It cannot be changed without changing our thinking.”\"\n    },\n    {\n      \"author\": \"J.K. Rowling\",\n      \"text\": \"“It is our choices, Harry, that show what we truly are, far more than our abilities.”\"\n    },\n    {\n      \"author\": \"Albert Einstein\",\n      \"text\": \"“There are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.”\"\n    }\n  ]\n}", "output": {"quotes": [{"text": "“The world as we have created it is a process of our thinking. It cannot be changed without changing our thinking.”", "author": "Albert Einstein"}, {"text": "“It is our choices, Harry, that show what we truly are, far more than our abilities.”", "author": "J.K. Rowling"}, {"text": "“There are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.”", "author": "Albert Einstein"}]}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 4, "input_tokens": 46831, "cached_input_tokens": 29967, "output_tokens": 615, "cost_usd": 0.059834, "raw": {"cost": {"model_usd": 0.059834, "total_usd": 0.060167, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 3, "cost_usd": 0.059834, "model_calls": 4, "input_tokens": 46831, "output_tokens": 615, "browser_minutes": 0.35, "browser_seconds": 21, "browser_traffic_mb": null, "cached_input_tokens": 29967}}, "error": null}}, {"id": "T3_pypi_moss_metadata", "category": "Tasks API", "tier": "Tier 3", "runnable": true, "title": "T3 pypi moss metadata", "intended": "Visit the live PyPI page for 'moss' and extract the latest version, release date, and Python requirement.", "expected": "Extract moss version 1.26.0, release date 2026-11-23, and Python >=3.10.", "result": "Worked as expected in 33.51s (6 browser steps, $0.074): extracted accurate data matching 100% of our formatting rules.", "verdict": "Met", "latency_ms": 33510.0, "cost_usd": 0.074028, "details": {"timestamp_utc": "2026-11-25T14:40:01.845756+00:00", "test_group": "task_run", "case_id": "T3_pypi_moss_metadata", "tier": 3, "wall_seconds": 33.51, "local_schema_valid": true, "local_schema_errors": [], "trace_steps": 6, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 6, "files_sample": ["screenshots/agent/ses_decda3b2fffe13me3vgWWIIMjq-1795617584854-000.png", "screenshots/agent/ses_decda3b2fffe13me3vgWWIIMjq-1795617594786-000.png", "screenshots/runner/00001-step-3.png", "screenshots/runner/00002-step-4.png", "screenshots/runner/00003-step-6.png"], "task_id": "task_fd1470c2378f45d69068c1ba7f0a31ea", "status": "completed", "model": "moss-balanced", "effort": "medium", "limits": {"max_cost_usd": 0.3, "max_runtime_seconds": 90}, "created_at": "2026-11-25T14:39:28.709044+00:00", "started_at": "2026-11-25T14:39:28.722963+00:00", "finished_at": "2026-11-25T14:40:00.350594+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\"package_name\":\"moss\",\"release_date\":\"2026-11-23\",\"latest_version\":\"1.26.0\",\"requires_python\":\">=3.10\"}", "output": {"package_name": "moss", "release_date": "2026-11-23", "latest_version": "1.26.0", "requires_python": ">=3.10"}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 7, "input_tokens": 88878, "cached_input_tokens": 70187, "output_tokens": 911, "cost_usd": 0.073695, "raw": {"cost": {"model_usd": 0.073695, "total_usd": 0.074028, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 6, "cost_usd": 0.073695, "model_calls": 7, "input_tokens": 88878, "output_tokens": 911, "browser_minutes": 0.51, "browser_seconds": 31, "browser_traffic_mb": null, "cached_input_tokens": 70187}}, "error": null}}, {"id": "T4_impossible_price_goal", "category": "Tasks API", "tier": "Tier 4", "runnable": true, "title": "T4 impossible price goal", "intended": "Break-It Test: Ask the browser agent to find a book under £1.00 (no such book exists on the site).", "expected": "Honestly report that no book under £1.00 was found instead of making one up.", "result": "Worked great (35.66s, $0.070): explored the site in 5 steps and honestly returned found=false instead of inventing a fake £0.99 book.", "verdict": "Met", "latency_ms": 35660.0, "cost_usd": 0.070054, "details": {"timestamp_utc": "2026-11-25T14:41:10.954886+00:00", "test_group": "task_run", "case_id": "T4_impossible_price_goal", "tier": 4, "wall_seconds": 35.66, "local_schema_valid": true, "local_schema_errors": [], "trace_steps": 5, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 4, "files_sample": ["screenshots/agent/ses_decd92edcffeBeAIbvxSHleleC-1795617662037-000.png", "screenshots/runner/00001-step-3.png", "screenshots/runner/00002-step-4.png", "screenshots/runner/00003-step-5.png"], "task_id": "task_09628ce846954a4ea6851175a43ce29b", "status": "completed", "model": "moss-balanced", "effort": "low", "limits": {"max_cost_usd": 0.2, "max_runtime_seconds": 60}, "created_at": "2026-11-25T14:40:37.425502+00:00", "started_at": "2026-11-25T14:40:37.440315+00:00", "finished_at": "2026-11-25T14:41:09.914265+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\"found\":false,\"title\":null,\"price_gbp\":null}", "output": {"found": false, "title": null, "price_gbp": null}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 6, "input_tokens": 74476, "cached_input_tokens": 56177, "output_tokens": 818, "cost_usd": 0.069721, "raw": {"cost": {"model_usd": 0.069721, "total_usd": 0.070054, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 5, "cost_usd": 0.069721, "model_calls": 6, "input_tokens": 74476, "output_tokens": 818, "browser_minutes": 0.53, "browser_seconds": 32, "browser_traffic_mb": null, "cached_input_tokens": 56177}}, "error": null}}, {"id": "T4_missing_required_isbn", "category": "Tasks API", "tier": "Tier 4", "runnable": true, "title": "T4 missing required isbn", "intended": "Break-It Test: Require a 13-digit ISBN code from a book page that does not display an ISBN anywhere.", "expected": "Since the required field is missing, mark the task as failed or incomplete rather than pretending it succeeded.", "result": "Misleading status: the agent honestly returned isbn_13=null and the validator flagged the missing field, yet the API still marked the overall task as 'Completed' (cost $0.063). Any app checking only status=='completed' would receive broken data.", "verdict": "Did Not Meet", "latency_ms": 41250.0, "cost_usd": 0.063093, "details": {"timestamp_utc": "2026-11-25T16:51:41.094235+00:00", "test_group": "task_run", "case_id": "T4_missing_required_isbn", "tier": 4, "wall_seconds": 41.25, "local_schema_valid": false, "local_schema_errors": ["isbn_13: None is not of type 'string'"], "trace_steps": 4, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 3, "files_sample": ["screenshots/agent/ses_dec61ca54ffeMSgl79T16NbAq8-1795625479807-000.png", "screenshots/runner/00001-step-3.png", "screenshots/runner/00002-step-5.png"], "task_id": "task_de8adc69dd984e988a8839d76f42eb18", "status": "completed", "model": "moss-balanced", "effort": "low", "limits": {"max_cost_usd": 0.25, "max_runtime_seconds": 75}, "created_at": "2026-11-25T16:51:01.698902+00:00", "started_at": "2026-11-25T16:51:01.716134+00:00", "finished_at": "2026-11-25T16:51:27.084799+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\"title\":\"A Light in the Attic\",\"isbn_13\":null}", "output": {"title": "A Light in the Attic", "isbn_13": null}}, "verification": {"method": "output_schema", "passed": false, "problems": ["$.isbn_13: expected string"]}, "usage": {"model_calls": 5, "input_tokens": 58794, "cached_input_tokens": 41640, "output_tokens": 669, "cost_usd": 0.06276, "raw": {"cost": {"model_usd": 0.06276, "total_usd": 0.063093, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 4, "cost_usd": 0.06276, "model_calls": 5, "input_tokens": 58794, "output_tokens": 669, "browser_minutes": 0.41, "browser_seconds": 25, "browser_traffic_mb": null, "cached_input_tokens": 41640}}, "error": null}}, {"id": "T4_strict_nested_enum", "category": "Tasks API", "tier": "Tier 4", "runnable": true, "title": "T4 strict nested enum", "intended": "Break-It Test: Enforce strict nested objects, 1-to-5 star ratings, currency='GBP', and exact stock labels.", "expected": "Follow every nested type, number range, and allowed text option with zero formatting errors.", "result": "Worked as expected in 19.68s (3 browser steps, $0.059): extracted accurate data matching 100% of our formatting rules.", "verdict": "Met", "latency_ms": 19680.0, "cost_usd": 0.058834, "details": {"timestamp_utc": "2026-11-25T14:42:02.005171+00:00", "test_group": "task_run", "case_id": "T4_strict_nested_enum", "tier": 4, "wall_seconds": 19.68, "local_schema_valid": true, "local_schema_errors": [], "trace_steps": 3, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 2, "files_sample": ["screenshots/agent/ses_decd83010ffeb2MUMcWcZF1JrZ-1795617713045-000.png", "screenshots/runner/00001-step-3.png"], "task_id": "task_0ffca4fb12f94459a6951515aa717422", "status": "completed", "model": "moss-balanced", "effort": "low", "limits": {"max_cost_usd": 0.25, "max_runtime_seconds": 75}, "created_at": "2026-11-25T14:41:42.624704+00:00", "started_at": "2026-11-25T14:41:42.636920+00:00", "finished_at": "2026-11-25T14:42:00.995485+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\"items\":[{\"title\":\"A Light in the Attic\",\"rating\":3,\"pricing\":{\"amount\":51.77,\"currency\":\"GBP\"},\"stock_status\":\"In Stock\"},{\"title\":\"Tipping the Velvet\",\"rating\":1,\"pricing\":{\"amount\":53.74,\"currency\":\"GBP\"},\"stock_status\":\"In Stock\"}]}", "output": {"items": [{"title": "A Light in the Attic", "rating": 3, "pricing": {"amount": 51.77, "currency": "GBP"}, "stock_status": "In Stock"}, {"title": "Tipping the Velvet", "rating": 1, "pricing": {"amount": 53.74, "currency": "GBP"}, "stock_status": "In Stock"}]}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 4, "input_tokens": 47123, "cached_input_tokens": 30247, "output_tokens": 452, "cost_usd": 0.058501, "raw": {"cost": {"model_usd": 0.058501, "total_usd": 0.058834, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 3, "cost_usd": 0.058501, "model_calls": 4, "input_tokens": 47123, "output_tokens": 452, "browser_minutes": 0.3, "browser_seconds": 18, "browser_traffic_mb": null, "cached_input_tokens": 30247}}, "error": null}}, {"id": "T4_broken_404_url", "category": "Tasks API", "tier": "Tier 4", "runnable": true, "title": "T4 broken 404 url", "intended": "Break-It Test: Send the browser agent to a broken 404 page that doesn't exist.", "expected": "Recognize the 404 page cleanly without crashing or inventing fake page text.", "result": "Handled cleanly (18.41s, $0.053): read '404 Not Found' accurately and set first_paragraph to null.", "verdict": "Met", "latency_ms": 18410.0, "cost_usd": 0.053177, "details": {"timestamp_utc": "2026-11-25T14:43:46.684689+00:00", "test_group": "task_run", "case_id": "T4_broken_404_url", "tier": 4, "wall_seconds": 18.41, "local_schema_valid": true, "local_schema_errors": [], "trace_steps": 3, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 2, "files_sample": ["screenshots/agent/ses_decd68c11ffekHxEdusIJTbW5Q-1795617821021-000.png", "screenshots/runner/00001-step-3.png"], "task_id": "task_bdef9b9cf5c941278976c2ace96717a2", "status": "completed", "model": "moss-balanced", "effort": "low", "limits": {"max_cost_usd": 0.15, "max_runtime_seconds": 60}, "created_at": "2026-11-25T14:43:29.858736+00:00", "started_at": "2026-11-25T14:43:29.871537+00:00", "finished_at": "2026-11-25T14:43:45.967356+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\"heading\":\"404 Not Found\",\"first_paragraph\":null,\"note\":\"The page has no paragraph; the only other visible text is \\\"nginx/1.21.6\\\".\",\"source\":\"https://books.toscrape.com/nonexistent-page-404-test\"}", "output": {"note": "The page has no paragraph; the only other visible text is \"nginx/1.21.6\".", "source": "https://books.toscrape.com/nonexistent-page-404-test", "heading": "404 Not Found", "first_paragraph": null}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 4, "input_tokens": 32473, "cached_input_tokens": 16260, "output_tokens": 329, "cost_usd": 0.052844, "raw": {"cost": {"model_usd": 0.052844, "total_usd": 0.053177, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 3, "cost_usd": 0.052844, "model_calls": 4, "input_tokens": 32473, "output_tokens": 329, "browser_minutes": 0.26, "browser_seconds": 15, "browser_traffic_mb": null, "cached_input_tokens": 16260}}, "error": null}}, {"id": "T4_non_html_json_url", "category": "Tasks API", "tier": "Tier 4", "runnable": true, "title": "T4 non html json url", "intended": "Break-It Test: Point the browser agent at a raw JSON API response (httpbin.org/json) instead of a webpage.", "expected": "Read the raw JSON displayed in the browser and extract the slideshow title and author.", "result": "Worked as expected in 19.61s (3 browser steps, $0.055): extracted accurate data matching 100% of our formatting rules.", "verdict": "Met", "latency_ms": 19610.0, "cost_usd": 0.054549, "details": {"timestamp_utc": "2026-11-25T14:44:07.159880+00:00", "test_group": "task_run", "case_id": "T4_non_html_json_url", "tier": 4, "wall_seconds": 19.61, "local_schema_valid": true, "local_schema_errors": [], "trace_steps": 3, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 2, "files_sample": ["screenshots/agent/ses_decd64754ffebfZnsg8pnNUL0m-1795617837570-000.png", "screenshots/runner/00001-step-3.png"], "task_id": "task_7f1f4f54204e4be5b16900cff18ad3bd", "status": "completed", "model": "moss-balanced", "effort": "low", "limits": {"max_cost_usd": 0.15, "max_runtime_seconds": 60}, "created_at": "2026-11-25T14:43:47.747527+00:00", "started_at": "2026-11-25T14:43:47.762209+00:00", "finished_at": "2026-11-25T14:44:05.131615+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\"title\":\"Sample Slide Show\",\"author\":\"Yours Truly\"}", "output": {"title": "Sample Slide Show", "author": "Yours Truly"}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 4, "input_tokens": 45930, "cached_input_tokens": 29629, "output_tokens": 288, "cost_usd": 0.054216, "raw": {"cost": {"model_usd": 0.054216, "total_usd": 0.054549, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 3, "cost_usd": 0.054216, "model_calls": 4, "input_tokens": 45930, "output_tokens": 288, "browser_minutes": 0.28, "browser_seconds": 17, "browser_traffic_mb": null, "cached_input_tokens": 29629}}, "error": null}}, {"id": "T4_budget_limit_probe", "category": "Tasks API", "tier": "Tier 4", "runnable": true, "title": "T4 budget limit probe", "intended": "Break-It Test: Give the agent a massive 50-page crawl goal with a tiny $0.02 spending cap.", "expected": "Stop as soon as spending hits $0.02 and report a budget-exceeded error.", "result": "Mostly worked: stopped automatically in 7.82s with 'budget_exceeded', saving us from burning credits. However, it slightly overshot the $0.02 limit to $0.0251 (~25% over) and saved zero debug screenshots.", "verdict": "Partial", "latency_ms": 7820.0, "cost_usd": 0.025099, "details": {"timestamp_utc": "2026-11-25T14:44:15.718362+00:00", "test_group": "task_run", "case_id": "T4_budget_limit_probe", "tier": 4, "wall_seconds": 7.82, "local_schema_valid": false, "local_schema_errors": ["output is None"], "trace_steps": 1, "trace_keys": ["final_result", "steps", "screenshots", "timeline", "video"], "file_count": 0, "files_sample": [], "task_id": "task_b04259b4430d442bb37a0d93176987f8", "status": "failed", "model": "moss-balanced", "effort": "medium", "limits": {"max_cost_usd": 0.02, "max_runtime_seconds": 60}, "created_at": "2026-11-25T14:44:08.290860+00:00", "started_at": "2026-11-25T14:44:08.300120+00:00", "finished_at": "2026-11-25T14:44:14.791980+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": null, "verification": null, "usage": {"model_calls": 2, "input_tokens": 8340, "cached_input_tokens": 0, "output_tokens": 120, "cost_usd": 0.024766, "raw": {"cost": {"model_usd": 0.024766, "total_usd": 0.025099, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 1, "cost_usd": 0.024766, "model_calls": 2, "input_tokens": 8340, "output_tokens": 120, "browser_minutes": 0.1, "browser_seconds": 6, "browser_traffic_mb": null, "cached_input_tokens": 0}}, "error": {"code": "budget_exceeded", "message": "Spent $0.02"}}}, {"id": "T4_cancel_lifecycle", "category": "Tasks API", "tier": "Tier 4", "runnable": true, "title": "Cancel Mid-Run & Live Browser Preview Link", "intended": "Start a long task with live_view enabled, wait 3 seconds, then cancel it to verify fast shutdown and live viewer URL.", "expected": "Receive a live_view URL to watch the browser, and have the task halt almost immediately when cancelled.", "result": "Did not meet expectations: no live_view URL was returned, and after calling cancel() at 3 seconds the agent kept running for another ~19 seconds (5 AI calls) and still charged $0.046 before stopping.", "verdict": "Did Not Meet", "latency_ms": 24020.0, "cost_usd": 0.045634, "details": {"timestamp_utc": "2026-11-25T17:13:52.375449+00:00", "test_group": "lifecycle_cancel", "case_id": "T4_cancel_lifecycle", "tier": 4, "wall_seconds": 24.02, "created_status": "queued", "live_url_present": false, "cancel_ack_status": "running", "cancel_ack_requested": true, "task_id": "task_21fca6a68fd34c51920a122a94bd05fc", "status": "cancelled", "model": "moss-balanced", "effort": "medium", "limits": {"max_cost_usd": 0.2, "max_runtime_seconds": 90}, "created_at": "2026-11-25T17:13:32.392742+00:00", "started_at": "2026-11-25T17:13:32.405149+00:00", "finished_at": "2026-11-25T17:13:51.435862+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": null, "verification": null, "usage": {"model_calls": 5, "input_tokens": 29633, "cached_input_tokens": 16053, "output_tokens": 383, "cost_usd": 0.045634, "raw": {"cost": {"model_usd": 0.045634, "total_usd": 0.045967, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 3, "cost_usd": 0.045634, "model_calls": 5, "input_tokens": 29633, "output_tokens": 383, "browser_minutes": 0.31, "browser_seconds": 19, "browser_traffic_mb": null, "cached_input_tokens": 16053}}, "error": null}}, {"id": "T4_parallel_2", "category": "Tasks API", "tier": "Tier 4", "runnable": true, "title": "Two Browser Tasks Running Simultaneously", "intended": "Launch 2 identical simple browser tasks at the exact same moment to check concurrency.", "expected": "Both tasks finish cleanly in roughly the same amount of time.", "result": "Partially met: both tasks succeeded ($0.114 combined), but one took 50.08s while the identical twin took 20.48s (2.4x slower).", "verdict": "Partial", "latency_ms": 50080.0, "cost_usd": 0.11408599999999999, "details": {"timestamp_utc": "2026-11-25T14:45:05.799433+00:00", "test_group": "parallel_tasks", "case_id": "T4_parallel_2", "tier": 4, "wall_seconds": 50.08, "results": [{"idx": 1, "status": "completed", "wall_s": 50.08, "cost_usd": 0.057199}, {"idx": 2, "status": "completed", "wall_s": 20.48, "cost_usd": 0.056887}]}}, {"id": "T4_min_runtime_floor", "category": "Tasks API", "tier": "Tier 4", "runnable": true, "title": "Short 45-Second Task Timeout Validation", "intended": "Set a 45-second maximum runtime limit on quick single-page tests.", "expected": "Accept 45 seconds (or clearly document the allowed range in the Python SDK).", "result": "Rejected with HTTP 400: 'max_runtime_seconds must be a number from 60 to 7200' — a minimum 60-second rule that isn't mentioned in the Python SDK documentation.", "verdict": "Partial", "latency_ms": 350.0, "cost_usd": 0.0, "details": {"timestamp_utc": "2026-11-25T14:42:02.710575+00:00", "test_group": "task_run", "case_id": "T4_non_html_json_url", "tier": 4, "wall_seconds": 0.35, "sdk_exception": true, "error_type": "invalid_request_error", "status": 400, "code": "invalid_request_error", "task_id": null, "message": "limits.max_runtime_seconds must be a number from 60 to 7200"}}, {"id": "DEMO-01", "category": "Combined Demo", "tier": "End-to-End", "runnable": true, "title": "Live Web Agent + Private PDF Knowledge Brief", "intended": "Combine both APIs: use Tasks API to fetch the live 'moss' PyPI version, then ask Inference API to write a 4-bullet engineering brief using our 10 uploaded PDFs.", "expected": "Tasks extracts moss 1.26.0, and Inference accurately answers all 4 points across our PDFs.", "result": "Partially met (29.31s Tasks + 3.03s Inference, $0.078): Tasks got moss 1.26.0 accurately and Inference nailed bullets 1-3, but missed bullet 4 (escalation code ESC-KST-ENT1 from PDF 08) because asking 4 topics at once diluted single-query retrieval—though it honestly abstained instead of guessing.", "verdict": "Partial", "latency_ms": 32340.0, "cost_usd": 0.077707, "details": {"timestamp_utc": "2026-11-25T14:45:40.726915+00:00", "task_seconds": 29.31, "inference_seconds": 3.03, "task": {"task_id": "task_17a6f0d38a494c8b9daba9cec788b2c5", "status": "completed", "model": "moss-balanced", "effort": "low", "limits": {"max_cost_usd": 0.25, "max_runtime_seconds": 75}, "created_at": "2026-11-25T14:45:11.176488+00:00", "started_at": "2026-11-25T14:45:11.196760+00:00", "finished_at": "2026-11-25T14:45:37.041434+00:00", "trace_available": true, "live_url": null, "cancel_requested": false, "result": {"output_text": "{\"latest_version\":\"1.26.0\",\"requires_python\":\">=3.10\",\"summary\":\"Moss is a Python SDK for semantic search with on-device AI capabilities, including local-first session indexing.\"}", "output": {"summary": "Moss is a Python SDK for semantic search with on-device AI capabilities, including local-first session indexing.", "latest_version": "1.26.0", "requires_python": ">=3.10"}}, "verification": {"method": "output_schema", "passed": true, "problems": null}, "usage": {"model_calls": 7, "input_tokens": 96767, "cached_input_tokens": 76341, "output_tokens": 728, "cost_usd": 0.077374, "raw": {"cost": {"model_usd": 0.077374, "total_usd": 0.077707, "browser_usd": 0.0003333333333333333, "traffic_usd": null}, "steps": 6, "cost_usd": 0.077374, "model_calls": 7, "input_tokens": 96767, "output_tokens": 728, "browser_minutes": 0.42, "browser_seconds": 25, "browser_traffic_mb": null, "cached_input_tokens": 76341}}, "error": null}, "inference": {"response_id": "resp_d814e129cab84d25bf71c3b79b6c64d6", "model": "moss/fastlane-1", "status": "completed", "request_id": "d814e129cab84d25bf71c3b79b6c64d6", "output_text": "*   **Live `moss` SDK vs. Firmware v4.18.2-rc3:** The latest `moss` PyPI package is v1.26.0 (requires Python >=3.10), while Kestrel firmware v4.18.2-rc3 (effective 2026-11-10) introduces a reduced WebRTC jitter buffer floor (18 ms), automatic fallback notifications for ERR-419-SYNC, an acoustic echo leakage patch, and new webhook payload fields (`latency_ms`, `barge_in_detected`).\n*   **TLS Deprecation Deadline:** TLS 1.0 and 1.1 connections to `api.kestrelcloud.net` and `sip.kestrelcloud.net` will be permanently disabled on **December 15, 2026**. All devices running firmware older than v4.12.0 must upgrade before this date to avoid ERR-770-TLS handshake rejections.\n*   **macOS Sequoia Bug (BUG-884):** Macs running macOS Sequoia connected via USB-C passthrough to Mic Array M4 may require a 3-second re-enumeration after lid-close sleep. **Workaround:** Connect the Mic Array wirelessly via Kestrel Hub Pro.\n*   **Escalation Code for 5+ Room Outage:** The provided knowledge base facts do not specify an escalation code for outages affecting 5 or more rooms.", "output_types": ["message"], "incomplete_reason": null, "usage": {"input_tokens": 1260, "output_tokens": 317, "total_tokens": 1577, "cached_tokens": 0, "reasoning_tokens": 0}}}}]};
+    let activeCategory = 'All';
+    let activeVerdict = 'All';
+    let searchQuery = '';
+    let selectedRowId = null;
+    const checkedIds = new Set();
+    const chatHistory = [];
+
+    function verdictBadge(v) {
+      if (v === 'Met') return '<span class="tag met">Yes · Met</span>';
+      if (v === 'Partial') return '<span class="tag partial">Partial</span>';
+      return '<span class="tag fail">No · Broken</span>';
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function askPreset(q) {
+      document.getElementById('chatInput').value = q;
+      sendChat(new Event('submit'));
+    }
+
+    function clearChat() {
+      chatHistory.length = 0;
+      document.getElementById('chatLog').innerHTML = '<div class="msg bot">Chat cleared. Ask anything about your indexed documents.</div>';
+    }
+
+    async function sendChat(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const btn = document.getElementById('chatSendBtn');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const log = document.getElementById('chatLog');
+      log.innerHTML += `<div class="msg user">${escapeHtml(text)}</div>`;
+      input.value = '';
+      btn.disabled = true;
+      btn.textContent = 'Thinking...';
+      log.scrollTop = log.scrollHeight;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            message: text,
+            history: chatHistory,
+            index_name: document.getElementById('chatIndex').value,
+            use_rag: document.getElementById('useRag').checked,
+            use_cache: document.getElementById('useCache').checked
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Chat request failed');
+
+        chatHistory.push({role: 'user', content: text});
+        chatHistory.push({role: 'assistant', content: data.reply});
+
+        const srcHtml = (data.sources && data.sources.length)
+          ? `<div class="sources-box"><strong>Retrieved Index Chunks (${data.retrieval_ms} ms):</strong>` +
+            data.sources.map(s => `<div class="source-hit"><span class="mono" style="color:var(--accent)">score ${s.score.toFixed(3)}</span> · ${escapeHtml(s.text.slice(0, 220))}...</div>`).join('') +
+            `</div>`
+          : '';
+
+        log.innerHTML += `
+          <div class="msg bot">
+            <div>${escapeHtml(data.reply).replace(/\n/g, '<br>')}</div>
+            <div class="msg-meta mono">model=${data.model} · latency=${data.latency_ms} ms · tokens=${data.usage?.total_tokens ?? '?'} (cached=${data.usage?.cached_tokens ?? 0})</div>
+            ${srcHtml}
+          </div>`;
+      } catch (err) {
+        log.innerHTML += `<div class="msg bot" style="border-color:var(--red);color:var(--red)">Error: ${escapeHtml(err.message)} (Make sure dashboard_server.py is running)</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send';
+        log.scrollTop = log.scrollHeight;
+      }
+    }
+
+    function renderTop() {
+      const k = DATA.kpis;
+      document.getElementById('creditBanner').textContent =
+        `Spend: $${k.total_cost_usd.toFixed(4)} / $${k.credit_budget_usd.toFixed(2)} credits`;
+
+      const items = [
+        { label: 'Total Tests Evaluated', val: k.total_cases, hint: `${k.met} Met · ${k.partial} Partial · ${k.did_not_meet} Broken` },
+        { label: 'Expectation Met Rate', val: `${Math.round((k.met / k.total_cases) * 100)}%`, hint: `${k.met}/${k.total_cases} strictly met` },
+        { label: 'Warm Streaming Speed', val: `${k.warm_ttft_p50_ms} ms`, hint: 'Typical time to first word' },
+        { label: 'PDF Knowledge Accuracy', val: k.rag_exact_match, hint: 'vs. 0/8 without index · 3/3 abstained' },
+        { label: 'Browser Tasks (Tiers 1-3)', val: k.tasks_tier1_3_pass, hint: 'Static, multi-step, JS & PyPI' },
+        { label: 'Total Spend Logged', val: `$${k.total_cost_usd.toFixed(2)}`, hint: 'Safely inside $10 credit' },
+      ];
+      document.getElementById('kpiGrid').innerHTML = items.map(i => `
+        <div class="kpi">
+          <div class="label">${i.label}</div>
+          <div class="val">${i.val}</div>
+          <div class="hint">${i.hint}</div>
+        </div>
+      `).join('');
+
+      const maxInf = Math.max(...DATA.charts.inference_latency.map(d => d.ms), 1);
+      document.getElementById('infChart').innerHTML = DATA.charts.inference_latency.map(d => `
+        <div class="bar-row">
+          <div class="bar-head"><span>${d.label}</span><span class="mono">${d.ms.toFixed(1)} ms</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(d.ms/maxInf)*100}%;background:${d.color}"></div></div>
+        </div>
+      `).join('');
+
+      const maxTask = Math.max(...DATA.charts.tasks.map(d => d.seconds), 1);
+      document.getElementById('taskChart').innerHTML = DATA.charts.tasks.map(d => {
+        const col = d.verdict === 'Met' ? '#34d399' : d.verdict === 'Partial' ? '#fbbf24' : '#f87171';
+        return `
+          <div class="bar-row">
+            <div class="bar-head"><span class="mono">${d.id}</span><span class="mono">${d.seconds}s · $${d.cost.toFixed(4)}</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${(d.seconds/maxTask)*100}%;background:${col}"></div></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderFilters() {
+      const cats = ['All', 'Portal UX', 'Inference API', 'Tasks API', 'Combined Demo'];
+      document.getElementById('catFilters').innerHTML = cats.map(c =>
+        `<button class="pill ${activeCategory === c ? 'active' : ''}" onclick="setCat('${c}')">${c}</button>`
+      ).join('');
+
+      const verdicts = ['All', 'Met', 'Partial', 'Did Not Meet'];
+      document.getElementById('verdictFilters').innerHTML = verdicts.map(v =>
+        `<button class="pill ${activeVerdict === v ? 'active' : ''}" onclick="setVerdict('${v}')">${v}</button>`
+      ).join('');
+    }
+
+    function setCat(c) { activeCategory = c; renderFilters(); renderTable(); }
+    function setVerdict(v) { activeVerdict = v; renderFilters(); renderTable(); }
+
+    function updateRerunBar() {
+      const n = checkedIds.size;
+      document.getElementById('rerunStatus').textContent = `${n} test${n === 1 ? '' : 's'} selected`;
+      document.getElementById('rerunBtn').disabled = n === 0;
+    }
+
+    function toggleCheck(id, ev) {
+      ev.stopPropagation();
+      if (checkedIds.has(id)) checkedIds.delete(id);
+      else checkedIds.add(id);
+      updateRerunBar();
+    }
+
+    function selectBroken() {
+      checkedIds.clear();
+      DATA.cases.filter(c => c.runnable && c.verdict !== 'Met').forEach(c => checkedIds.add(c.id));
+      renderTable(); updateRerunBar();
+    }
+
+    function selectCategory(cat) {
+      checkedIds.clear();
+      DATA.cases.filter(c => c.runnable && c.category === cat).forEach(c => checkedIds.add(c.id));
+      renderTable(); updateRerunBar();
+    }
+
+    function clearSelection() {
+      checkedIds.clear();
+      renderTable(); updateRerunBar();
+    }
+
+    async function rerunIds(ids) {
+      if (!ids.length) return;
+      const btn = document.getElementById('rerunBtn');
+      const status = document.getElementById('rerunStatus');
+      btn.disabled = true;
+      status.textContent = `Running ${ids.length} test(s): ${ids.join(', ')}...`;
+      status.style.color = 'var(--amber)';
+
+      try {
+        const res = await fetch('/api/rerun', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ test_ids: ids })
+        });
+        const out = await res.json();
+        if (!res.ok) throw new Error(out.error || 'Re-run failed');
+        DATA = out.dashboard;
+        renderTop();
+        renderTable();
+        const okCount = out.outcomes.filter(o => o.ok).length;
+        status.textContent = `Finished ${okCount}/${out.outcomes.length} re-run(s) — results shown below!`;
+        status.style.color = 'var(--green)';
+
+        const box = document.getElementById('rerunResults');
+        const body = document.getElementById('rerunResultsBody');
+        body.innerHTML = out.outcomes.map(o => {
+          const rawStr = o.raw_output == null
+            ? '(no structured output)'
+            : (typeof o.raw_output === 'string' ? o.raw_output : JSON.stringify(o.raw_output, null, 2));
+          const expMet = o.verdict === 'Met'
+            ? 'Yes — met expectation'
+            : (o.verdict === 'Partial' ? 'Partially met expectation' : 'No — did not meet expectation');
+          return `
+            <div class="rerun-item">
+              <div class="rerun-item-head">
+                <div>
+                  <span class="mono" style="color:var(--accent);font-weight:700">${escapeHtml(o.id)}</span>
+                  <span style="font-weight:600;margin-left:8px">${escapeHtml(o.title || o.id)}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span class="mono" style="color:var(--muted)">${o.seconds ?? '-'}s · $${(o.cost_usd || 0).toFixed(4)}</span>
+                  ${verdictBadge(o.verdict)}
+                </div>
+              </div>
+              <div style="font-size:13px"><strong>Did it meet the expectation?</strong> ${escapeHtml(expMet)}</div>
+              ${o.expected ? `<div style="font-size:12.5px;color:var(--muted);margin-top:4px"><strong>Expected:</strong> ${escapeHtml(o.expected)}</div>` : ''}
+              <div style="font-size:13px;margin-top:4px"><strong>Result summary:</strong> ${escapeHtml(o.result || o.error || 'Completed')}</div>
+              <div class="rerun-out-box mono"><strong>Actual Output:</strong>
+${escapeHtml(rawStr)}</div>
+            </div>
+          `;
+        }).join('');
+        box.classList.add('open');
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } catch (err) {
+        status.textContent = `Error: ${err.message}`;
+        status.style.color = 'var(--red)';
+      } finally {
+        btn.disabled = checkedIds.size === 0;
+      }
+    }
+
+    function rerunSelected() { rerunIds([...checkedIds]); }
+
+    function renderTable() {
+      const q = searchQuery.trim().toLowerCase();
+      const filtered = DATA.cases.filter(c => {
+        if (activeCategory !== 'All' && c.category !== activeCategory) return false;
+        if (activeVerdict !== 'All' && c.verdict !== activeVerdict) return false;
+        if (q && !`${c.id} ${c.title} ${c.intended} ${c.expected} ${c.result}`.toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      document.getElementById('casesBody').innerHTML = filtered.map(c => `
+        <tr class="${selectedRowId === c.id ? 'selected' : ''}" onclick="showDetails('${c.id}')">
+          <td onclick="event.stopPropagation()">
+            ${c.runnable ? `<input type="checkbox" ${checkedIds.has(c.id) ? 'checked' : ''} onchange="toggleCheck('${c.id}', event)" />` : '<span style="color:var(--muted)">—</span>'}
+          </td>
+          <td>
+            <div class="mono" style="color:var(--accent);font-weight:600">${c.id}</div>
+            <div style="font-size:12px;font-weight:600;margin-top:2px">${escapeHtml(c.title)}</div>
+            <div style="margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+              <span class="cat-tag">${c.category} · ${c.tier}</span>
+              ${c.runnable ? `<button class="btn-sm" onclick="event.stopPropagation(); rerunIds(['${c.id}'])">Re-run</button>` : ''}
+            </div>
+          </td>
+          <td>${escapeHtml(c.intended)}</td>
+          <td>${escapeHtml(c.expected)}</td>
+          <td>${escapeHtml(c.result)}</td>
+          <td>${verdictBadge(c.verdict)}</td>
+        </tr>
+      `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No matching tests.</td></tr>';
+    }
+
+    function showDetails(id) {
+      selectedRowId = id;
+      renderTable();
+      const c = DATA.cases.find(x => x.id === id);
+      if (!c) return;
+      document.getElementById('drawerTitle').textContent = `${c.id} — Raw Logged Payload`;
+      document.getElementById('drawerJson').textContent = JSON.stringify(c.details, null, 2);
+      const d = document.getElementById('detailDrawer');
+      d.classList.add('open');
+      d.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.getElementById('searchBox').addEventListener('input', e => {
+      searchQuery = e.target.value;
+      renderTable();
+    });
+
+    renderTop();
+    renderFilters();
+    renderTable();
+    updateRerunBar();
+  </script>
+</body>
+</html>

@@ -1,0 +1,559 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 21 0 R] /Count 9 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 7167 >>
+stream
+0.07 0.25 0.18 rg 48 690.0 516 66 re f
+0.92 0.99 0.95 rg BT /F2 16 Tf 1 0 0 1 62.0 730.0 Tm (Moss Inference Work Sample - Complete Project & Evaluation Report) Tj ET 0 0 0 rg
+0.72 0.93 0.82 rg BT /F1 9.5 Tf 1 0 0 1 62.0 710.0 Tm (Portal Audit | Inference API | Tasks API | Live RAG Chatbot | Total Cases: 40 | Spend: $0.9720 / $10.00) Tj ET 0 0 0 rg
+0.07 0.34 0.23 rg BT /F2 12.5 Tf 1 0 0 1 48.0 664.0 Tm (1. What We Built and What We Tried First) Tj ET 0 0 0 rg
+0.75 0.85 0.80 RG 0.8 w 48 658.0 m 564 658.0 l S 0 0 0 RG
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 644.0 Tm (This project evaluates Moss Inference across its entire developer surface: the web Portal) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 631.0 Tm (\(portal.usemoss.dev/inference\), the Inference API, and the Tasks API, using the Python SDK) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 618.0 Tm (\(moss v1.26.0\). Rather than running ad-hoc manual prompts, we built a reproducible test suite,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 605.0 Tm (raw JSONL audit logs, an end-to-end combined agent demo, a live indexed-document RAG chatbot,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 592.0 Tm (and an interactive evaluation dashboard.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 575.0 Tm (- Step 1 - Portal Onboarding & 2FA Audit: Walked through the 6-step onboarding flow,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 562.5 Tm (  tested the pre-seeded 50-doc sample index \('voice-agent-context'\), noted UX gaps during) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 550.0 Tm (  2FA phone setup, and captured screenshots in notes/portal_onboarding_ux.pdf.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 535.0 Tm (- Step 2 - 10 Synthetic Knowledge-Base PDFs: Created 10 realistic customer-support and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 522.5 Tm (  hardware PDFs for a fictional company \(Kestrel Systems, Inc.\) inside) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 510.0 Tm (  fixtures/synthetic_kb/ and uploaded them into Moss index 'Company factuals' \(chunked) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 497.5 Tm (  into 18 searchable documents\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 482.5 Tm (- Step 3 - Automated Evaluation Suites: Built src/eval_inference.py \(streaming TTFT,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 470.0 Tm (  caching, RAG grounding, abstention, tool calling, multi-turn, error probes,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 457.5 Tm (  concurrency\) and src/eval_tasks.py \(4 escalating browser tiers + break-it probes\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 442.5 Tm (- Step 4 - Combined Demo, Chatbot & Dashboard: Built src/demo_research_agent.py) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 430.0 Tm (  \(combining Tasks API + Moss Index + Inference API\), plus src/dashboard_server.py and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 417.5 Tm (  src/build_dashboard.py providing a live RAG chatbot and selective test re-runner.) Tj ET 0 0 0 rg
+0.07 0.34 0.23 rg BT /F2 12.5 Tf 1 0 0 1 48.0 396.5 Tm (2. What Are the Inference API and Tasks API?) Tj ET 0 0 0 rg
+0.75 0.85 0.80 RG 0.8 w 48 390.5 m 564 390.5 l S 0 0 0 RG
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 376.5 Tm (- Moss Retrieval \(MossClient\): Moss's core semantic/hybrid search runtime. You upload) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 364.0 Tm (  documents \(PDFs/DOCX/URLs\) into an index, load the index into memory \(load_index\), and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 351.5 Tm (  perform fast sub-50ms local similarity lookups \(client.query\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 336.5 Tm (- Inference API \(client.responses.create\): An OpenAI Responses-compatible LLM gateway) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 324.0 Tm (  \(https://inference.moss.dev/v1, default model moss/fastlane-1\) that automatically) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 311.5 Tm (  retrieves relevant facts from your specified Moss indexes \(indexes=[...]\) and injects) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 299.0 Tm (  them into the model prompt before streaming or returning a reply. Supports tool calls,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 286.5 Tm (  multi-turn conversations, reply caching \(cache=True\), and BYOK vendor models.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 271.5 Tm (- Tasks API \(client.tasks.run / create / cancel / trace\): An autonomous cloud browser) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 259.0 Tm (  agent runtime. Instead of writing fragile CSS/Playwright selectors, you give a) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 246.5 Tm (  plain-English goal, a starting URL \(environment={'type': 'browser', 'start_url': ...}\),) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 234.0 Tm (  an optional JSON output_schema, and runtime/cost limits. A remote browser executes) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 221.5 Tm (  multi-step clicks, JS waits, and extraction, then returns structured JSON, gateway) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 209.0 Tm (  schema verification, token/browser cost, step traces, and screenshots.) Tj ET 0 0 0 rg
+0.07 0.34 0.23 rg BT /F2 12.5 Tf 1 0 0 1 48.0 188.0 Tm (3. How the Entire Project Pipeline Works) Tj ET 0 0 0 rg
+0.75 0.85 0.80 RG 0.8 w 48 182.0 m 564 182.0 l S 0 0 0 RG
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 168.0 Tm (1\) Knowledge Ingestion: 10 synthetic PDFs -> uploaded via Portal into index 'Company factuals') Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 155.0 Tm (\(18 indexed chunks\) -> queried locally via MossClient or remotely via MossInference.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 138.0 Tm (2\) Evaluation Execution: Python async scripts \(eval_inference.py, eval_tasks.py,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 125.0 Tm (demo_research_agent.py\) load credentials from .env, execute controlled tests against) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 112.0 Tm (inference.moss.dev/v1, cross-check Tasks outputs locally using JSON Schema Draft7Validator,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 99.0 Tm (and append scrubbed telemetry to logs/*.jsonl.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 82.0 Tm (3\) Interactive Dashboard & RAG Chatbot: src/build_dashboard.py aggregates the latest run per) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 69.0 Tm (test ID into plain-language summaries \(dashboard/index.html\). src/dashboard_server.py serves) Tj ET 0 0 0 rg
+0.45 0.50 0.48 rg BT /F1 8 Tf 1 0 0 1 48.0 30.0 Tm (Moss Inference Evaluation & Project Report  |  Varshil  |  Page 1 of 9) Tj ET 0 0 0 rg
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 6972 >>
+stream
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 744.0 Tm (the UI at localhost:8765, routes live user chat messages to MossClient.query \(chunk preview\) +) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 731.0 Tm (MossInference.responses.create \(/api/chat\), and allows re-running any chosen subset of tests) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 718.0 Tm (via src/test_runner.py \(/api/rerun\).) Tj ET 0 0 0 rg
+0.07 0.34 0.23 rg BT /F2 12.5 Tf 1 0 0 1 48.0 695.0 Tm (4. How Tests Were Conducted \(Methodology & Guardrails\)) Tj ET 0 0 0 rg
+0.75 0.85 0.80 RG 0.8 w 48 689.0 m 564 689.0 l S 0 0 0 RG
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 675.0 Tm (- Preventing LLM Memorization: We used fictional numbers \(19-day return window, 12.5%) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 662.5 Tm (  fee, ERR-419-SYNC, 47-min P1 SLA, ESC-KST-409\) absent from LLM training data, and ran) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 650.0 Tm (  every RAG prompt both ungrounded \(retrieve=False\) and grounded \(indexes=['Company) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 637.5 Tm (  factuals']\) to prove retrieval.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 622.5 Tm (- True Latency Measurement: Streaming TTFT and RAG runs explicitly set cache=False so) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 610.0 Tm (  cached hits didn't mask real latency; caching was benchmarked separately with) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 597.5 Tm (  cache=True.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 582.5 Tm (- Budget & Timeout Protection: Every browser task enforced explicit limits \(max_cost_usd) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 570.0 Tm (  $0.10-$0.35, max_runtime_seconds 60-120s\). Total logged spend across all 40 evaluated) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 557.5 Tm (  cases was $0.9720 out of the $10.00 credit.) Tj ET 0 0 0 rg
+0.07 0.34 0.23 rg BT /F2 12.5 Tf 1 0 0 1 48.0 536.5 Tm (5. Tests Conducted & Pass/Fail Results) Tj ET 0 0 0 rg
+0.75 0.85 0.80 RG 0.8 w 48 530.5 m 564 530.5 l S 0 0 0 RG
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 516.5 Tm (Overall Scorecard: 40 total cases evaluated | Met Expectation: 26 | Partially Met: 7 | Failed) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 503.5 Tm (/ Broken: 7 | Warm Streaming TTFT p50: 145.3 ms | Synthetic KB Grounding: 6/8 \(vs. 0/8) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.5 Tf 1 0 0 1 48.0 490.5 Tm (ungrounded\) | Tasks Tiers 1-3: 6/6 \(100%\).) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 473.5 Tm ([MET] PORTAL-01 \(Portal UX - Onboarding\): First-Time Setup & Instant Search Playground) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 461.0 Tm (- Intended: See how fast a brand-new user can try semantic search after signing up.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 446.0 Tm (- Expected: A guided setup with working sample data so I can test search right away) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 433.5 Tm (  without writing setup code.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 418.5 Tm (- Result: Worked great: Moss created a 50-document sample index \('voice-agent-context'\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 406.0 Tm (  and ran live semantic searches right inside the browser in 1.0 ms with accurate) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 393.5 Tm (  relevance scores \(0.94, 0.79, 0.71\).) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 375.5 Tm ([DID NOT MEET] PORTAL-02 \(Portal UX - Onboarding\): Finding Inference API, Tasks API &) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 363.0 Tm (Credits on Signup) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 350.5 Tm (- Intended: Check whether signing up at portal.usemoss.dev/inference introduces the) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 338.0 Tm (  Inference API, Tasks API, and my $10 credits.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 323.0 Tm (- Expected: Either an Inference-focused walkthrough or a clear 'Skip to Dashboard' button) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 310.5 Tm (  showing models, tasks, and credits.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 295.5 Tm (- Result: Did not meet expectations: all 6 onboarding steps only talked about basic) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 283.0 Tm (  document retrieval. Inference API, Tasks API, available models, and the $10 credit) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 270.5 Tm (  balance were hidden until clicking 'Go to dashboard'. Also, the setup commands used) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 258.0 Tm (  Linux/Mac 'export' syntax instead of Windows PowerShell.) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 240.0 Tm ([DID NOT MEET] PORTAL-03 \(Portal UX - Auth & 2FA\): 2FA Phone Number Format Validation) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 227.5 Tm (- Intended: Test whether the Portal validates phone number formatting during two-factor) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 215.0 Tm (  authentication \(2FA\) before sending an OTP.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 200.0 Tm (- Expected: Reject an incorrectly formatted phone number immediately with a clear) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 187.5 Tm (  validation error and never claim an OTP was sent.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 172.5 Tm (- Result: Broken validation: even when an incorrectly formatted phone number is entered) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 160.0 Tm (  during 2FA, the UI still displays 'OTP sent' instead of catching the bad format.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 142.0 Tm ([MET] INF-PREFLIGHT \(Inference API - Setup Check\): Verify Uploaded PDFs Are Indexed &) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 129.5 Tm (Searchable) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 117.0 Tm (- Intended: Confirm the 10 synthetic policy PDFs I uploaded to 'Company factuals') Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 104.5 Tm (  finished building and respond to direct search.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 89.5 Tm (- Expected: The index should be ready and answer a direct search query in under 100) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 77.0 Tm (  milliseconds once loaded.) Tj ET 0 0 0 rg
+0.45 0.50 0.48 rg BT /F1 8 Tf 1 0 0 1 48.0 30.0 Tm (Moss Inference Evaluation & Project Report  |  Varshil  |  Page 2 of 9) Tj ET 0 0 0 rg
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 7064 >>
+stream
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 744.0 Tm (- Result: Worked as expected: all 10 PDFs were split into 18 searchable chunks and marked) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 731.5 Tm (  Ready. Initial load took 2.3 seconds, after which local search took 19.2 ms.) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 713.5 Tm ([PARTIAL] INF-STREAM \(Inference API - Speed & Streaming\): Streaming Speed) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 701.0 Tm (\(Time-to-First-Word\) & Completeness) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 688.5 Tm (- Intended: Measure how fast the AI starts streaming words back \(with caching turned off\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 676.0 Tm (  and confirm nothing gets dropped between streamed chunks and the final text.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 661.0 Tm (- Expected: First word arrives in under 800 ms consistently, and 100% of streamed text) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 648.5 Tm (  matches the final saved answer.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 633.5 Tm (- Result: Mostly met: warm runs started streaming in 144 to 148 ms \(very fast\), and all) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 621.0 Tm (  5/5 responses matched word-for-word. However, the very first cold request took 1.12) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 608.5 Tm (  seconds before the first word appeared.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 590.5 Tm ([MET] INF-CACHE \(Inference API - Caching\): Repeat-Question Cache Speedup) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 578.0 Tm (- Intended: Ask the exact same question twice with caching turned on to see if Moss) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 565.5 Tm (  serves the repeat answer faster.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 550.5 Tm (- Expected: The second identical question should return noticeably faster with the exact) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 538.0 Tm (  same answer.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 523.0 Tm (- Result: Worked as expected: first request took 61 ms, and the repeated request dropped) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 510.5 Tm (  to 61 ms \(1.0x faster\) with zero input tokens billed on the repeat.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 492.5 Tm ([MET] G1_standard_return \(Inference API - PDF Knowledge \(RAG\)\): PDF Question: G1) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 480.0 Tm (standard return) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 467.5 Tm (- Intended: Ask for our company's standard return window and opened-box restocking fee.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 452.5 Tm (- Expected: Answer '19 calendar days' and '12.5%' from PDF 01 \(and refuse when the index) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 440.0 Tm (  is turned off\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 425.0 Tm (- Result: Met \(560 ms vs. 1.2s without index\): answered accurately using the PDFs - "The) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 412.5 Tm (  standard hardware return window at Kestrel Systems is 19 calendar days from the) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 400.0 Tm (  verified carrier delivery date, for customers purchasing standard Kestrel hardware) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 387.5 Tm (  dir...") Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 369.5 Tm ([MET] G2_duplicate_charge \(Inference API - PDF Knowledge \(RAG\)\): PDF Question: G2) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 357.0 Tm (duplicate charge) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 344.5 Tm (- Intended: Ask how support handles a duplicate charge on the same order.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 329.5 Tm (- Expected: Cite the 15-minute verification window, 3-to-5-business-day settlement, and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 317.0 Tm (  that the 12.5% restocking fee is bypassed.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 302.0 Tm (- Result: Met \(628 ms\): correctly gave the 15-minute verification window, 3-to-5-day) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 289.5 Tm (  settlement, and said it bypasses the standard restocking fee \(paraphrasing '12.5%'\).) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 271.5 Tm ([PARTIAL] G3_err_419_sync_and_reset \(Inference API - PDF Knowledge \(RAG\)\): PDF Question:) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 259.0 Tm (G3 err 419 sync and reset) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 246.5 Tm (- Intended: Ask what causes hardware error ERR-419-SYNC, how to fix it, and how long to) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 234.0 Tm (  hold the reset buttons.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 219.0 Tm (- Expected: Answer 2.4 GHz interference \(cause\), switch to 5 GHz Band C \(fix\), and hold) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 206.5 Tm (  Mute+Pair for 11 seconds.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 191.5 Tm (- Result: Partially met \(957 ms\): got the 5 GHz fix and 11-second reset right, but mixed) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 179.0 Tm (  up the cause-saying '5 GHz overlap' instead of '2.4 GHz overlap'.) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 161.0 Tm ([DID NOT MEET] G4_sku_pricing_and_hold \(Inference API - PDF Knowledge \(RAG\)\): PDF) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 148.5 Tm (Question: G4 sku pricing and hold) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 136.0 Tm (- Intended: Ask a question requiring two different PDFs: the Hub Pro SKU and price \(PDF) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 123.5 Tm (  05\) plus its replacement deposit hold \(PDF 03\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 108.5 Tm (- Expected: Combine both PDFs to return SKU-KHP-900, $349 MSRP, and $149 deposit hold.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 93.5 Tm (- Result: Did not get all facts \(712 ms\): it found SKU-KHP-900 and the $149 hold from PDF) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 81.0 Tm (  03, but missed the $349 price from PDF 05 \(though it honestly said it couldn't find the) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 68.5 Tm (  price instead of guessing\).) Tj ET 0 0 0 rg
+0.45 0.50 0.48 rg BT /F1 8 Tf 1 0 0 1 48.0 30.0 Tm (Moss Inference Evaluation & Project Report  |  Varshil  |  Page 3 of 9) Tj ET 0 0 0 rg
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< /Length 6914 >>
+stream
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 744.0 Tm ([MET] G5_enterprise_sla \(Inference API - PDF Knowledge \(RAG\)\): PDF Question: G5) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 731.5 Tm (enterprise sla) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 719.0 Tm (- Intended: Ask for Enterprise VIP terms: outage response time, extended return window,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 706.5 Tm (  and escalation code.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 691.5 Tm (- Expected: Return 47-minute response SLA, 45-day return window, and code ESC-KST-ENT1.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 676.5 Tm (- Result: Met \(927 ms vs. 146 ms without index\): answered accurately using the PDFs -) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 664.0 Tm (  "For Kestrel Enterprise accounts: * **P1 Engineering Response SLA:** 47-minute initial) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 651.5 Tm (  engineering response \(24/7\) for Severity 1 \(P1\) incidents involving a complete vo...") Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 633.5 Tm ([PARTIAL] G6_holiday_precedence \(Inference API - PDF Knowledge \(RAG\)\): PDF Question: G6) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 621.0 Tm (holiday precedence) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 608.5 Tm (- Intended: Test whether a seasonal holiday addendum \(PDF 09\) overrides the standard) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 596.0 Tm (  19-day return rule \(PDF 01\) for a Nov 15, 2026 order.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 581.0 Tm (- Expected: Override the 19-day rule and state the extended deadline of January 22, 2027) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 568.5 Tm (  \(for Nov 1-Dec 24 orders\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 553.5 Tm (- Result: Mostly met \(941 ms\): correctly overrode the 19-day rule with January 22, 2027,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 541.0 Tm (  but misquoted the holiday window end date as 'December 1' instead of 'December 24'.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 523.0 Tm ([MET] G7_voice_escalation_codes \(Inference API - PDF Knowledge \(RAG\)\): PDF Question: G7) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 510.5 Tm (voice escalation codes) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 498.0 Tm (- Intended: Ask which human-handoff codes to use for a $500+ refund vs. a customer) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 485.5 Tm (  threatening a chargeback.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 470.5 Tm (- Expected: Cite ESC-KST-409 for $500+ refunds and ESC-KST-911 for chargeback threats.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 455.5 Tm (- Result: Met \(703 ms vs. 360 ms without index\): answered accurately using the PDFs -) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 443.0 Tm (  "For a refund or billing adjustment exceeding $500.00, the escalation code is) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 430.5 Tm (  **ESC-KST-409**, which requires live specialist approval. If a caller mentions a) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 418.0 Tm (  chargeback ...") Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 400.0 Tm ([MET] G8_firmware_tls_and_bug \(Inference API - PDF Knowledge \(RAG\)\): PDF Question: G8) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 387.5 Tm (firmware tls and bug) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 375.0 Tm (- Intended: Ask for the TLS 1.1 shutoff date and the workaround for macOS Sequoia bug) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 362.5 Tm (  BUG-884 from the release notes \(PDF 10\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 347.5 Tm (- Expected: Cite December 15, 2026 and connecting wirelessly via Kestrel Hub Pro to avoid) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 335.0 Tm (  the 3-second macOS Sequoia delay.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 320.0 Tm (- Result: Met \(811 ms vs. 165 ms without index\): answered accurately using the PDFs -) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 307.5 Tm (  "TLS 1.0 and TLS 1.1 connections to api.kestrelcloud.net and sip.kestrelcloud.net will) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 295.0 Tm (  be permanently disabled on December 15, 2026. Known issue BUG-884 states that Macs ...") Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 277.0 Tm ([MET] A1_crypto_payments \(Inference API - Honesty / No Guessing\): Missing-Fact Check: A1) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 264.5 Tm (crypto payments) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 252.0 Tm (- Intended: Ask if Kestrel accepts Bitcoin or Solana \(not mentioned anywhere in the 10) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 239.5 Tm (  PDFs\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 224.5 Tm (- Expected: Refuse to guess and say the documents don't cover crypto payments.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 209.5 Tm (- Result: Worked as expected \(275 ms\): refused cleanly without making anything up - "I do) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 197.0 Tm (  not have that information in the retrieved policy documents.") Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 179.0 Tm ([MET] A2_unreleased_hardware \(Inference API - Honesty / No Guessing\): Missing-Fact) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 166.5 Tm (Check: A2 unreleased hardware) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 154.0 Tm (- Intended: Ask for the price of a fictional 'Kestrel Ultra 2027' headset not in our) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 141.5 Tm (  PDFs.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 126.5 Tm (- Expected: Refuse to invent a price and explain it isn't in the docs.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 111.5 Tm (- Result: Worked as expected \(923 ms\): refused cleanly without making anything up - "I do) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 99.0 Tm (  not have that information in the retrieved documents. The provided materials do not) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 86.5 Tm (  mention a "Kestrel Ultra 2027 headset," nor do they list pric") Tj ET 0 0 0 rg
+0.45 0.50 0.48 rg BT /F1 8 Tf 1 0 0 1 48.0 30.0 Tm (Moss Inference Evaluation & Project Report  |  Varshil  |  Page 4 of 9) Tj ET 0 0 0 rg
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 14 0 R >>
+endobj
+14 0 obj
+<< /Length 6360 >>
+stream
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 744.0 Tm ([MET] A3_tokyo_office \(Inference API - Honesty / No Guessing\): Missing-Fact Check: A3) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 731.5 Tm (tokyo office) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 719.0 Tm (- Intended: Ask for the street address of a Tokyo hub \(only Austin & Rotterdam exist in) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 706.5 Tm (  PDF 07\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 691.5 Tm (- Expected: State clearly that there is no Tokyo address in the documents.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 676.5 Tm (- Result: Worked as expected \(263 ms\): refused cleanly without making anything up - "I do) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 664.0 Tm (  not have that information.") Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 646.0 Tm ([MET] INF-TOOL-CALL \(Inference API - API Features\): Function / Tool Calling Support) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 633.5 Tm (- Intended: Ask the AI to check an RMA tracking code while giving it a lookup tool) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 621.0 Tm (  definition.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 606.0 Tm (- Expected: Instead of guessing, the AI should return a structured tool-call request for) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 593.5 Tm (  'lookup_rma_status'.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 578.5 Tm (- Result: Worked as expected \(1.3s\): cleanly generated a structured function call to look) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 566.0 Tm (  up RMA-KST-104829.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 548.0 Tm ([MET] INF-MULTITURN \(Inference API - API Features\): Follow-Up Conversation Memory) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 535.5 Tm (- Intended: Ask 'What is the standard return window?' and then follow up with 'How does) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 523.0 Tm (  that change for Enterprise accounts?' without repeating 'return window'.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 508.0 Tm (- Expected: Understand 'that' refers to the return window and answer 45 calendar days.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 493.0 Tm (- Result: Worked as expected \(591 ms\): understood the follow-up context and answered "For) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 480.5 Tm (  Enterprise accounts, the standard 19-day return window is extended to 45 calendar) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 468.0 Tm (  days.") Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 450.0 Tm ([DID NOT MEET] INF-ERR-NONEXISTENT_INDEX \(Inference API - Error Handling\): Edge Case:) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 437.5 Tm (nonexistent index) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 425.0 Tm (- Intended: Send a request pointing to an index name that doesn't exist.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 410.0 Tm (- Expected: Return a clear '404 Not Found' error telling the developer the index doesn't) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 397.5 Tm (  exist.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 382.5 Tm (- Result: Confusing error: returned HTTP 403 Permission Error \('X-Moss-Indexes names an) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 370.0 Tm (  index outside this project'\) instead of 404 Not Found, making a simple typo look like) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 357.5 Tm (  an access breach.) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 339.5 Tm ([DID NOT MEET] INF-ERR-EMPTY_INPUT \(Inference API - Error Handling\): Edge Case: empty) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 327.0 Tm (input) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 314.5 Tm (- Intended: Send an empty message \(input=''\) to test input validation.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 299.5 Tm (- Expected: Reject the empty prompt with a '400 Bad Request' error.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 284.5 Tm (- Result: Broken validation: accepted the empty string, returned 200 OK, and hallucinated) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 272.0 Tm (  an answer claiming it couldn't identify an image that was never sent.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 254.0 Tm ([MET] INF-ERR-INVALID_MODEL_NO_BYOK \(Inference API - Error Handling\): Edge Case: invalid) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 241.5 Tm (model no byok) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 229.0 Tm (- Intended: Try calling 'gpt-4o-mini' without providing a personal OpenAI API key.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 214.0 Tm (- Expected: Return a clear error explaining that third-party models need a provider key.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 199.0 Tm (- Result: Worked great: returned HTTP 400 with a helpful message telling you to pass) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 186.5 Tm (  X-Moss-Provider-Key or switch to 'moss/fastlane-1'.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 168.5 Tm ([MET] INF-ERR-INVALID_KEY \(Inference API - Error Handling\): Edge Case: invalid key) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 156.0 Tm (- Intended: Send a fake project API key to verify security.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 141.0 Tm (- Expected: Reject the request immediately with a 401 Unauthorized error.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 126.0 Tm (- Result: Worked as expected: immediately blocked the request with HTTP 401 \('The project) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 113.5 Tm (  credentials were rejected'\).) Tj ET 0 0 0 rg
+0.45 0.50 0.48 rg BT /F1 8 Tf 1 0 0 1 48.0 30.0 Tm (Moss Inference Evaluation & Project Report  |  Varshil  |  Page 5 of 9) Tj ET 0 0 0 rg
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 16 0 R >>
+endobj
+16 0 obj
+<< /Length 6167 >>
+stream
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 744.0 Tm ([MET] INF-BURST-5 \(Inference API - Concurrency\): 5 Simultaneous Grounded Requests) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 731.5 Tm (- Intended: Fire 5 AI questions at the exact same time to test speed under load and rate) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 719.0 Tm (  limits.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 704.0 Tm (- Expected: All 5 questions complete accurately without timing out or hitting rate-limit) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 691.5 Tm (  errors.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 676.5 Tm (- Result: Worked as expected: all 5/5 requests succeeded accurately in 1.11 seconds) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 664.0 Tm (  total.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 646.0 Tm ([MET] T1_books_top5 \(Tasks API - Tier 1\): T1 books top5) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 633.5 Tm (- Intended: Open books.toscrape.com and extract the first 5 book titles, prices, and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 621.0 Tm (  stock statuses in structured JSON.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 606.0 Tm (- Expected: Finish cleanly with all 5 books accurate and matching the requested data) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 593.5 Tm (  format.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 578.5 Tm (- Result: Worked as expected in 27.93s \(3 browser steps, $0.062\): extracted accurate data) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 566.0 Tm (  matching 100% of our formatting rules.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 548.0 Tm ([MET] T1_quotes_top5 \(Tasks API - Tier 1\): T1 quotes top5) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 535.5 Tm (- Intended: Open quotes.toscrape.com and extract the first 5 quotes, authors, and tag) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 523.0 Tm (  lists.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 508.0 Tm (- Expected: Finish cleanly with all 5 quotes accurate and matching the requested format.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 493.0 Tm (- Result: Worked as expected in 26.75s \(3 browser steps, $0.064\): extracted accurate data) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 480.5 Tm (  matching 100% of our formatting rules.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 462.5 Tm ([MET] T2_books_science_extremes \(Tasks API - Tier 2\): T2 books science extremes) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 450.0 Tm (- Intended: Navigate into the 'Science' category, inspect all books there, and find the) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 437.5 Tm (  total count plus cheapest and priciest book.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 422.5 Tm (- Expected: Click through to Science and return 14 books, cheapest GBP 10.01 \(Origin of) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 410.0 Tm (  Species\), priciest GBP 57.36.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 395.0 Tm (- Result: Worked as expected in 30.87s \(5 browser steps, $0.069\): extracted accurate data) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 382.5 Tm (  matching 100% of our formatting rules.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 364.5 Tm ([MET] T2_quotes_page2_life \(Tasks API - Tier 2\): T2 quotes page2 life) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 352.0 Tm (- Intended: Click 'Next' to go to Page 2 of quotes.toscrape.com and extract only the) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 339.5 Tm (  quotes tagged 'life'.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 324.5 Tm (- Expected: Navigate to Page 2 and return all 4 'life'-tagged quotes accurately.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 309.5 Tm (- Result: Worked as expected in 38.45s \(5 browser steps, $0.081\): extracted accurate data) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 297.0 Tm (  matching 100% of our formatting rules.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 279.0 Tm ([MET] T3_js_rendered_quotes \(Tasks API - Tier 3\): T3 js rendered quotes) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 266.5 Tm (- Intended: Open a JavaScript-rendered page \(/js/\) where quotes load dynamically and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 254.0 Tm (  extract the first 3.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 239.0 Tm (- Expected: Wait for JavaScript to finish loading and extract 3 valid quotes.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 224.0 Tm (- Result: Worked as expected in 23.82s \(3 browser steps, $0.060\): extracted accurate data) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 211.5 Tm (  matching 100% of our formatting rules.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 193.5 Tm ([MET] T3_pypi_moss_metadata \(Tasks API - Tier 3\): T3 pypi moss metadata) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 181.0 Tm (- Intended: Visit the live PyPI page for 'moss' and extract the latest version, release) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 168.5 Tm (  date, and Python requirement.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 153.5 Tm (- Expected: Extract moss version 1.26.0, release date 2026-11-23, and Python >=3.10.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 138.5 Tm (- Result: Worked as expected in 33.51s \(6 browser steps, $0.074\): extracted accurate data) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 126.0 Tm (  matching 100% of our formatting rules.) Tj ET 0 0 0 rg
+0.45 0.50 0.48 rg BT /F1 8 Tf 1 0 0 1 48.0 30.0 Tm (Moss Inference Evaluation & Project Report  |  Varshil  |  Page 6 of 9) Tj ET 0 0 0 rg
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 18 0 R >>
+endobj
+18 0 obj
+<< /Length 6801 >>
+stream
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 744.0 Tm ([MET] T4_impossible_price_goal \(Tasks API - Tier 4\): T4 impossible price goal) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 731.5 Tm (- Intended: Break-It Test: Ask the browser agent to find a book under GBP 1.00 \(no such) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 719.0 Tm (  book exists on the site\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 704.0 Tm (- Expected: Honestly report that no book under GBP 1.00 was found instead of making one) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 691.5 Tm (  up.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 676.5 Tm (- Result: Worked great \(35.66s, $0.070\): explored the site in 5 steps and honestly) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 664.0 Tm (  returned found=false instead of inventing a fake GBP 0.99 book.) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 646.0 Tm ([DID NOT MEET] T4_missing_required_isbn \(Tasks API - Tier 4\): T4 missing required isbn) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 633.5 Tm (- Intended: Break-It Test: Require a 13-digit ISBN code from a book page that does not) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 621.0 Tm (  display an ISBN anywhere.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 606.0 Tm (- Expected: Since the required field is missing, mark the task as failed or incomplete) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 593.5 Tm (  rather than pretending it succeeded.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 578.5 Tm (- Result: Misleading status: the agent honestly returned isbn_13=null and the validator) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 566.0 Tm (  flagged the missing field, yet the API still marked the overall task as 'Completed') Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 553.5 Tm (  \(cost $0.063\). Any app checking only status=='completed' would receive broken data.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 535.5 Tm ([MET] T4_strict_nested_enum \(Tasks API - Tier 4\): T4 strict nested enum) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 523.0 Tm (- Intended: Break-It Test: Enforce strict nested objects, 1-to-5 star ratings,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 510.5 Tm (  currency='GBP', and exact stock labels.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 495.5 Tm (- Expected: Follow every nested type, number range, and allowed text option with zero) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 483.0 Tm (  formatting errors.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 468.0 Tm (- Result: Worked as expected in 19.68s \(3 browser steps, $0.059\): extracted accurate data) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 455.5 Tm (  matching 100% of our formatting rules.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 437.5 Tm ([MET] T4_broken_404_url \(Tasks API - Tier 4\): T4 broken 404 url) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 425.0 Tm (- Intended: Break-It Test: Send the browser agent to a broken 404 page that doesn't) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 412.5 Tm (  exist.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 397.5 Tm (- Expected: Recognize the 404 page cleanly without crashing or inventing fake page text.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 382.5 Tm (- Result: Handled cleanly \(18.41s, $0.053\): read '404 Not Found' accurately and set) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 370.0 Tm (  first_paragraph to null.) Tj ET 0 0 0 rg
+0.07 0.45 0.25 rg BT /F2 9.5 Tf 1 0 0 1 48.0 352.0 Tm ([MET] T4_non_html_json_url \(Tasks API - Tier 4\): T4 non html json url) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 339.5 Tm (- Intended: Break-It Test: Point the browser agent at a raw JSON API response) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 327.0 Tm (  \(httpbin.org/json\) instead of a webpage.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 312.0 Tm (- Expected: Read the raw JSON displayed in the browser and extract the slideshow title) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 299.5 Tm (  and author.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 284.5 Tm (- Result: Worked as expected in 19.61s \(3 browser steps, $0.055\): extracted accurate data) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 272.0 Tm (  matching 100% of our formatting rules.) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 254.0 Tm ([PARTIAL] T4_budget_limit_probe \(Tasks API - Tier 4\): T4 budget limit probe) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 241.5 Tm (- Intended: Break-It Test: Give the agent a massive 50-page crawl goal with a tiny $0.02) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 229.0 Tm (  spending cap.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 214.0 Tm (- Expected: Stop as soon as spending hits $0.02 and report a budget-exceeded error.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 199.0 Tm (- Result: Mostly worked: stopped automatically in 7.82s with 'budget_exceeded', saving us) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 186.5 Tm (  from burning credits. However, it slightly overshot the $0.02 limit to $0.0251 \(~25%) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 174.0 Tm (  over\) and saved zero debug screenshots.) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 156.0 Tm ([DID NOT MEET] T4_cancel_lifecycle \(Tasks API - Tier 4\): Cancel Mid-Run & Live Browser) Tj ET 0 0 0 rg
+0.70 0.14 0.14 rg BT /F2 9.5 Tf 1 0 0 1 48.0 143.5 Tm (Preview Link) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 131.0 Tm (- Intended: Start a long task with live_view enabled, wait 3 seconds, then cancel it to) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 118.5 Tm (  verify fast shutdown and live viewer URL.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 103.5 Tm (- Expected: Receive a live_view URL to watch the browser, and have the task halt almost) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 91.0 Tm (  immediately when cancelled.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 76.0 Tm (- Result: Did not meet expectations: no live_view URL was returned, and after calling) Tj ET 0 0 0 rg
+0.45 0.50 0.48 rg BT /F1 8 Tf 1 0 0 1 48.0 30.0 Tm (Moss Inference Evaluation & Project Report  |  Varshil  |  Page 7 of 9) Tj ET 0 0 0 rg
+endstream
+endobj
+19 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 20 0 R >>
+endobj
+20 0 obj
+<< /Length 7000 >>
+stream
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 744.0 Tm (  cancel\(\) at 3 seconds the agent kept running for another ~19 seconds \(5 AI calls\) and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 731.5 Tm (  still charged $0.046 before stopping.) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 713.5 Tm ([PARTIAL] T4_parallel_2 \(Tasks API - Tier 4\): Two Browser Tasks Running Simultaneously) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 701.0 Tm (- Intended: Launch 2 identical simple browser tasks at the exact same moment to check) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 688.5 Tm (  concurrency.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 673.5 Tm (- Expected: Both tasks finish cleanly in roughly the same amount of time.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 658.5 Tm (- Result: Partially met: both tasks succeeded \($0.114 combined\), but one took 50.08s) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 646.0 Tm (  while the identical twin took 20.48s \(2.4x slower\).) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 628.0 Tm ([PARTIAL] T4_min_runtime_floor \(Tasks API - Tier 4\): Short 45-Second Task Timeout) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 615.5 Tm (Validation) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 603.0 Tm (- Intended: Set a 45-second maximum runtime limit on quick single-page tests.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 588.0 Tm (- Expected: Accept 45 seconds \(or clearly document the allowed range in the Python SDK\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 573.0 Tm (- Result: Rejected with HTTP 400: 'max_runtime_seconds must be a number from 60 to 7200') Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 560.5 Tm (  - a minimum 60-second rule that isn't mentioned in the Python SDK documentation.) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 542.5 Tm ([PARTIAL] DEMO-01 \(Combined Demo - End-to-End\): Live Web Agent + Private PDF Knowledge) Tj ET 0 0 0 rg
+0.65 0.40 0.02 rg BT /F2 9.5 Tf 1 0 0 1 48.0 530.0 Tm (Brief) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 517.5 Tm (- Intended: Combine both APIs: use Tasks API to fetch the live 'moss' PyPI version, then) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 505.0 Tm (  ask Inference API to write a 4-bullet engineering brief using our 10 uploaded PDFs.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 490.0 Tm (- Expected: Tasks extracts moss 1.26.0, and Inference accurately answers all 4 points) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 477.5 Tm (  across our PDFs.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 462.5 Tm (- Result: Partially met \(29.31s Tasks + 3.03s Inference, $0.078\): Tasks got moss 1.26.0) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 450.0 Tm (  accurately and Inference nailed bullets 1-3, but missed bullet 4 \(escalation code) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 437.5 Tm (  ESC-KST-ENT1 from PDF 08\) because asking 4 topics at once diluted single-query) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 58.0 425.0 Tm (  retrieval-though it honestly abstained instead of guessing.) Tj ET 0 0 0 rg
+0.07 0.34 0.23 rg BT /F2 12.5 Tf 1 0 0 1 48.0 401.0 Tm (6. Challenges, Real-World Impact & Recommended Fixes) Tj ET 0 0 0 rg
+0.75 0.85 0.80 RG 0.8 w 48 395.0 m 564 395.0 l S 0 0 0 RG
+0.55 0.14 0.14 rg BT /F2 10.5 Tf 1 0 0 1 48.0 381.0 Tm (1. Portal 2FA Accepts Invalid Phone Format & Says 'OTP Sent' \(PORTAL-03\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 367.0 Tm (- Observed Issue: During 2FA setup, entering a malformed phone number still displays 'OTP) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 354.5 Tm (  sent' without rejecting the invalid format.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 339.5 Tm (- Real-World Impact: Users never receive verification codes and get locked out; attackers) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 327.0 Tm (  or buggy clients can trigger wasted SMS carrier requests.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 312.0 Tm (- How to Fix: Validate phone numbers against strict E.164 rules on both frontend form) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 299.5 Tm (  submit and backend /otp endpoint before sending SMS; return a clear 400 validation) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 287.0 Tm (  error.) Tj ET 0 0 0 rg
+0.55 0.14 0.14 rg BT /F2 10.5 Tf 1 0 0 1 48.0 269.0 Tm (2. Inference/Tasks & Credits Hidden in /inference Onboarding \(PORTAL-02\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 255.0 Tm (- Observed Issue: Signing up via portal.usemoss.dev/inference runs a 6-step retrieval-only) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 242.5 Tm (  wizard without introducing Inference API, Tasks API, models, or the $10 credit balance;) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 230.0 Tm (  Step 6 emits bash 'export' commands on Windows.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 215.0 Tm (- Real-World Impact: Developers evaluating Inference/Tasks feel lost during onboarding and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 202.5 Tm (  Windows users hit copy-paste friction.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 187.5 Tm (- How to Fix: Route /inference signups to an Inference/Tasks quickstart with a) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 175.0 Tm (  Skip-to-Dashboard option, live indexing progress, credit meter, and OS-tabbed env) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 162.5 Tm (  snippets \(Bash + PowerShell\).) Tj ET 0 0 0 rg
+0.55 0.14 0.14 rg BT /F2 10.5 Tf 1 0 0 1 48.0 144.5 Tm (3. Empty Input Returns 200 OK & Hallucinates About an Image \(INF-ERR-EMPTY_INPUT\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 130.5 Tm (- Observed Issue: Calling responses.create\(model='moss', input=''\) did not raise 400; it) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 118.0 Tm (  completed and replied 'Based on the image provided, I cannot determine...'.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 103.0 Tm (- Real-World Impact: Production chatbots receiving an accidental blank string return) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 90.5 Tm (  bizarre hallucinated text to end users instead of catching a client bug.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 75.5 Tm (- How to Fix: Enforce non-empty input validation at the API gateway and return 400) Tj ET 0 0 0 rg
+0.45 0.50 0.48 rg BT /F1 8 Tf 1 0 0 1 48.0 30.0 Tm (Moss Inference Evaluation & Project Report  |  Varshil  |  Page 8 of 9) Tj ET 0 0 0 rg
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 22 0 R >>
+endobj
+22 0 obj
+<< /Length 6948 >>
+stream
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 744.0 Tm (  invalid_request_error immediately.) Tj ET 0 0 0 rg
+0.55 0.14 0.14 rg BT /F2 10.5 Tf 1 0 0 1 48.0 726.0 Tm (4. Nonexistent Index Returns 403 Instead of 404 \(INF-ERR-NONEXISTENT_INDEX\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 712.0 Tm (- Observed Issue: Passing an unknown index name returned HTTP 403 permission_error \('index) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 699.5 Tm (  outside this project'\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 684.5 Tm (- Real-World Impact: Developers debugging a simple typo waste time troubleshooting) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 672.0 Tm (  IAM/project credentials instead of fixing the index name.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 657.0 Tm (- How to Fix: Distinguish missing indexes from cross-project unauthorized indexes and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 644.5 Tm (  return 404 not_found_error.) Tj ET 0 0 0 rg
+0.55 0.14 0.14 rg BT /F2 10.5 Tf 1 0 0 1 48.0 626.5 Tm (5. Multi-Doc / Multi-Part Recall Dilution & Small-Model Slips \(G4, G3, G6, DEMO-01\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 612.5 Tm (- Observed Issue: Single-query retrieval missed secondary PDF chunks when a prompt spanned) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 600.0 Tm (  multiple documents \(G4 missed $349 MSRP in PDF 05; DEMO-01 missed ESC-KST-ENT1 in PDF) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 587.5 Tm (  08\), and moss/fastlane-1 slipped on two details \(5 GHz vs 2.4 GHz; Dec 1 vs Dec 24\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 572.5 Tm (- Real-World Impact: Complex customer-support queries requiring policy overrides or) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 560.0 Tm (  multi-doc synthesis can omit critical rules or misstate numbers.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 545.0 Tm (- How to Fix: Support optional query decomposition / multi-query retrieval, expose) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 532.5 Tm (  retrieved chunk citations in Response, and allow higher-accuracy model tiers for complex) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 520.0 Tm (  synthesis.) Tj ET 0 0 0 rg
+0.55 0.14 0.14 rg BT /F2 10.5 Tf 1 0 0 1 48.0 502.0 Tm (6. Tasks API Marks Failed Schema Validation as status='completed' \(T4_missing_required_isbn\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 488.0 Tm (- Observed Issue: When a required field \(isbn_13\) did not exist on the page,) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 475.5 Tm (  verification.passed was False, yet task.status remained 'completed' with error=None.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 460.5 Tm (- Real-World Impact: Downstream pipelines checking only task.status == 'completed') Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 448.0 Tm (  silently ingest null or broken records into databases.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 433.0 Tm (- How to Fix: Introduce a distinct status \(e.g., 'completed_invalid' or 'failed' with) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 420.5 Tm (  error.code='schema_validation_failed'\) or add strict_schema=True enforcement.) Tj ET 0 0 0 rg
+0.55 0.14 0.14 rg BT /F2 10.5 Tf 1 0 0 1 48.0 402.5 Tm (7. Slow Task Cancellation \(~19s Lag\) & Missing live_url \(T4_cancel_lifecycle\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 388.5 Tm (- Observed Issue: Calling cancel\(\) 3s after task creation still ran 5 model calls for ~19s) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 376.0 Tm (  \($0.0462 billed\), and live_view=True returned live_url=None.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 361.0 Tm (- Real-World Impact: Users aborting runaway jobs still pay for ~20s of extra compute, and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 348.5 Tm (  operators cannot watch live browser runs for debugging.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 333.5 Tm (- How to Fix: Check an immediate cancellation token between browser actions and populate) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 321.0 Tm (  live_url as soon as the browser session allocates.) Tj ET 0 0 0 rg
+0.55 0.14 0.14 rg BT /F2 10.5 Tf 1 0 0 1 48.0 303.0 Tm (8. Budget Cap Overshoot, Missing Trace Files & SDK Cost Mismatch \(T4_budget_limit_probe\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 289.0 Tm (- Observed Issue: A $0.02 cap aborted cleanly \(budget_exceeded\) but overshot to $0.0248) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 276.5 Tm (  \(~25%\) and saved 0 screenshots; also TaskUsage.cost_usd drops browser_usd found in) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 264.0 Tm (  raw.cost.total_usd.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 249.0 Tm (- Real-World Impact: Unexpected billing drift on tight budgets, no visual debugging) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 236.5 Tm (  artifacts on failed runs, and inaccurate cost telemetry in user dashboards.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 221.5 Tm (- How to Fix: Perform pre-call cost reservation before each model turn, flush captured) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 209.0 Tm (  screenshots on abort, and expose total_cost_usd on TaskUsage.) Tj ET 0 0 0 rg
+0.55 0.14 0.14 rg BT /F2 10.5 Tf 1 0 0 1 48.0 191.0 Tm (9. Undocumented 60s Runtime Floor & Parallel Latency Variance \(T4_min_runtime_floor, T4_parallel_2\)) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 177.0 Tm (- Observed Issue: max_runtime_seconds=45 triggered a 400 error \(must be 60..7200\),) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 164.5 Tm (  undocumented in SDK docstrings; twin concurrent tasks showed 2.4x variance \(50.08s vs) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 152.0 Tm (  20.48s\).) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 137.0 Tm (- Real-World Impact: Unexpected 400 errors in production integrations and unpredictable) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 124.5 Tm (  tail latency under concurrent workloads.) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 109.5 Tm (- How to Fix: Document min/max bounds in TaskLimitsParam \(or validate client-side\) and) Tj ET 0 0 0 rg
+0.10 0.12 0.11 rg BT /F1 9.2 Tf 1 0 0 1 56.0 97.0 Tm (  maintain pre-warmed browser pools to smooth cold-start queue jitter.) Tj ET 0 0 0 rg
+0.45 0.50 0.48 rg BT /F1 8 Tf 1 0 0 1 48.0 30.0 Tm (Moss Inference Evaluation & Project Report  |  Varshil  |  Page 9 of 9) Tj ET 0 0 0 rg
+endstream
+endobj
+xref
+0 23
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000175 00000 n 
+0000000272 00000 n 
+0000000374 00000 n 
+0000000510 00000 n 
+0000007729 00000 n 
+0000007865 00000 n 
+0000014889 00000 n 
+0000015026 00000 n 
+0000022143 00000 n 
+0000022281 00000 n 
+0000029248 00000 n 
+0000029386 00000 n 
+0000035799 00000 n 
+0000035937 00000 n 
+0000042157 00000 n 
+0000042295 00000 n 
+0000049149 00000 n 
+0000049287 00000 n 
+0000056340 00000 n 
+0000056478 00000 n 
+trailer
+<< /Size 23 /Root 1 0 R >>
+startxref
+63479
+%%EOF

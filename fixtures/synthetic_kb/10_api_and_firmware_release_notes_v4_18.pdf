@@ -1,0 +1,58 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 2253 >>
+stream
+BT /F2 9 Tf 1 0 0 1 54.0 738.0 Tm (ENGINEERING & RELEASE NOTES) Tj ET
+BT /F2 17 Tf 1 0 0 1 54.0 720.0 Tm (Firmware v4.18.2-rc3 and Telemetry Webhook Release) Tj ET
+BT /F2 17 Tf 1 0 0 1 54.0 698.0 Tm (Notes) Tj ET
+BT /F1 9 Tf 1 0 0 1 54.0 676.0 Tm (Doc ID: KB-REL-010  |  Version: 4.18.2-rc3  |  Effective: 2026-11-10) Tj ET
+0.75 0.78 0.80 RG 0.8 w 54 666.0 m 558 666.0 l S 0 0 0 RG
+BT /F2 12 Tf 1 0 0 1 54.0 646.0 Tm (1. Firmware v4.18.2-rc3 Highlights \(Kestrel Hub Pro & Mic Array M4\)) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 629.0 Tm (- Reduced WebRTC adaptive jitter buffer floor from 42 ms to 18 ms on low-loss 5 GHz) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 615.0 Tm (  links, improving voice bot turn-taking latency.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 598.0 Tm (- Added automatic fallback notification when ERR-419-SYNC packet loss exceeds 4%) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 584.0 Tm (  over 30 seconds.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 567.0 Tm (- Patched acoustic echo leakage when Acoustic Pods operate at > 85% speaker gain.) Tj ET
+BT /F2 12 Tf 1 0 0 1 54.0 542.0 Tm (2. Security & Protocol Deprecation Notice) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 525.0 Tm (TLS 1.0 and TLS 1.1 connections to api.kestrelcloud.net and sip.kestrelcloud.net will) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 511.0 Tm (be permanently disabled on December 15, 2026. All devices running firmware older than) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 497.0 Tm (v4.12.0 must upgrade before that date to avoid ERR-770-TLS / handshake rejections.) Tj ET
+BT /F2 12 Tf 1 0 0 1 54.0 469.0 Tm (3. Webhook Payload Additions & Known Issues) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 452.0 Tm (- Added latency_ms \(float\) and barge_in_detected \(boolean\) fields to) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 438.0 Tm (  call.turn_completed webhook events.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 421.0 Tm (- Known Issue BUG-884: Macs running macOS Sequoia connected over USB-C passthrough) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 407.0 Tm (  to Mic Array M4 may require a 3-second re-enumeration after lid-close sleep.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 393.0 Tm (  Workaround: connect Mic Array wirelessly via Kestrel Hub Pro.) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.0 34.0 Tm (Kestrel Systems, Inc. - Internal Knowledge Base  |  KB-REL-010  |  Page 1 of 1) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000456 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+2761
+%%EOF

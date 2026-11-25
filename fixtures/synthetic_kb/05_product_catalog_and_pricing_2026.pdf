@@ -1,0 +1,63 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 2651 >>
+stream
+BT /F2 9 Tf 1 0 0 1 54.0 738.0 Tm (PRODUCT CATALOG & PRICING) Tj ET
+BT /F2 17 Tf 1 0 0 1 54.0 720.0 Tm (2026 Official Hardware SKUs, Specifications, and) Tj ET
+BT /F2 17 Tf 1 0 0 1 54.0 698.0 Tm (Software Tiers) Tj ET
+BT /F1 9 Tf 1 0 0 1 54.0 676.0 Tm (Doc ID: KB-CAT-005  |  Version: 2026.2  |  Effective: 2026-02-15) Tj ET
+0.75 0.78 0.80 RG 0.8 w 54 666.0 m 558 666.0 l S 0 0 0 RG
+BT /F2 12 Tf 1 0 0 1 54.0 646.0 Tm (1. Hardware Lineup) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 629.0 Tm (- Kestrel Hub Pro \(SKU-KHP-900\) - MSRP $349.00. Dual-band Wi-Fi 6E + PoE+ Ethernet,) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 615.0 Tm (  8-channel neural acoustic echo cancellation, supports up to 6 paired Mic Arrays.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 598.0 Tm (- Kestrel Mic Array M4 \(SKU-KMA-404\) - MSRP $189.00. 4-beamforming MEMS capsule) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 584.0 Tm (  array, 7-meter pickup radius, 18-hour battery or USB-C continuous power.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 567.0 Tm (- Kestrel Acoustic Pod \(SKU-KAP-620\) - MSRP $599.00. Tabletop conference) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 553.0 Tm (  speakerphone + 360-degree array for rooms up to 14 people; max 3 pods) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 539.0 Tm (  daisy-chained.) Tj ET
+BT /F2 12 Tf 1 0 0 1 54.0 514.0 Tm (2. Cloud Voice Software Plans) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 497.0 Tm (- Cloud Voice Starter - $29/seat/month \($24/seat billed annually\). Includes 1,500) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 483.0 Tm (  domestic minutes/seat, standard voice transcription, and 30-day call log) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 469.0 Tm (  retention.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 452.0 Tm (- Cloud Voice Pro - $54/seat/month \($45/seat billed annually\). Includes 5,000) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 438.0 Tm (  domestic minutes/seat, real-time sentiment & CRM webhook sync, 365-day retention,) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 424.0 Tm (  and BYO-LLM voice bot bridge.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 407.0 Tm (- Enterprise Custom \(SKU-KCP-ENT\) - Minimum 25 seats, custom volume pricing,) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 393.0 Tm (  dedicated VPC peering, and 47-minute P1 SLA.) Tj ET
+BT /F2 12 Tf 1 0 0 1 54.0 368.0 Tm (3. Volume Hardware Discounts) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 351.0 Tm (Orders of 10 to 24 hardware units receive an automatic 8% cart discount. Orders of 25+) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 337.0 Tm (units qualify for custom Enterprise quoting \(15% to 22% off MSRP\) via) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 323.0 Tm (sales@kestrelsystems.io.) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.0 34.0 Tm (Kestrel Systems, Inc. - Internal Knowledge Base  |  KB-CAT-005  |  Page 1 of 1) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000456 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+3159
+%%EOF

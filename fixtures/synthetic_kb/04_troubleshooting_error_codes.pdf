@@ -1,0 +1,67 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 3070 >>
+stream
+BT /F2 9 Tf 1 0 0 1 54.0 738.0 Tm (TECHNICAL SUPPORT RUNBOOK) Tj ET
+BT /F2 17 Tf 1 0 0 1 54.0 720.0 Tm (Kestrel Hardware Error Codes, LED Diagnostics, and) Tj ET
+BT /F2 17 Tf 1 0 0 1 54.0 698.0 Tm (Reset Procedures) Tj ET
+BT /F1 9 Tf 1 0 0 1 54.0 676.0 Tm (Doc ID: KB-TRB-004  |  Version: 4.1  |  Effective: 2026-03-10) Tj ET
+0.75 0.78 0.80 RG 0.8 w 54 666.0 m 558 666.0 l S 0 0 0 RG
+BT /F2 12 Tf 1 0 0 1 54.0 646.0 Tm (1. Standard Diagnostic Error Codes) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 629.0 Tm (- ERR-102-PWR: Insufficient PoE wattage. Kestrel Hub Pro requires IEEE 802.3at) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 615.0 Tm (  \(PoE+, minimum 25.5W\). Standard 802.3af \(15.4W\) triggers amber blinking and shuts) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 601.0 Tm (  down the DSP array.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 584.0 Tm (- ERR-218-SIP: SIP registration timeout against sip.kestrelcloud.net:5061. Verify) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 570.0 Tm (  UDP/TCP port 5061 and disable SIP ALG on the local router.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 553.0 Tm (- ERR-419-SYNC: Wireless Mic Array M4 packet drop or Bluetooth/DECT desync exceeding) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 539.0 Tm (  4% loss over 30 seconds. Usually caused by 2.4 GHz Wi-Fi channel overlap; switch) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 525.0 Tm (  Hub wireless backhaul to 5 GHz Band C or move Mic Array within 9 meters) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 511.0 Tm (  line-of-sight.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 494.0 Tm (- ERR-503-MESH: Daisy-chained Acoustic Pod topology exceeded maximum hop count of 3) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 480.0 Tm (  units.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 463.0 Tm (- ERR-770-TLS: Device system clock drift > 180 seconds causing TLS certificate) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 449.0 Tm (  validation failure. Enable NTP UDP port 123.) Tj ET
+BT /F2 12 Tf 1 0 0 1 54.0 424.0 Tm (2. LED Status Light Key) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 407.0 Tm (- Solid Mint Green: Healthy cloud connection and active noise-cancellation DSP.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 390.0 Tm (- Slow Pulsing Blue: Firmware update downloading \(do not unplug power\).) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 373.0 Tm (- Rapid Blinking Amber \(3x/sec\): ERR-102-PWR under-voltage warning.) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 356.0 Tm (- Solid Crimson Red: Hardware self-test failure on boot; eligible for immediate) Tj ET
+BT /F1 10 Tf 1 0 0 1 64.0 342.0 Tm (  Advance Replacement.) Tj ET
+BT /F2 12 Tf 1 0 0 1 54.0 317.0 Tm (3. Hard Factory Reset Sequence) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 300.0 Tm (To clear cached Wi-Fi profiles and re-pair a Kestrel Hub Pro, press and hold both the) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 286.0 Tm (Mute button and the Pair button simultaneously for exactly 11 seconds until the status) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 272.0 Tm (ring flashes white twice. Releasing before 11 seconds performs a soft network restart) Tj ET
+BT /F1 10 Tf 1 0 0 1 54.0 258.0 Tm (only.) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.0 34.0 Tm (Kestrel Systems, Inc. - Internal Knowledge Base  |  KB-TRB-004  |  Page 1 of 1) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000456 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+3578
+%%EOF

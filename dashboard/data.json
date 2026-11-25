@@ -1,8 +1,8 @@
 {
   "kpis": {
     "total_cases": 37,
-    "met": 26,
-    "partial": 7,
+    "met": 25,
+    "partial": 8,
     "did_not_meet": 4,
     "total_cost_usd": 1.1292,
     "remaining_credit_usd": 8.8708,
@@ -12,7 +12,8 @@
     "total_tokens": 985967,
     "warm_ttft_p50_ms": 140.1,
     "rag_exact_match": "6/8",
-    "tasks_tier1_3_pass": "6/6 (100%)"
+    "tasks_tier1_3_pass": "6/6 (100%)",
+    "public_rerun_locked": false
   },
   "charts": {
     "inference_latency": [
@@ -113,7 +114,7 @@
       {
         "id": "T4_cancel_lifecycle",
         "seconds": 24.02,
-        "cost": 0.0456,
+        "cost": 0.046,
         "verdict": "Did Not Meet"
       },
       {
@@ -131,9 +132,9 @@
       "tier": "Setup Check",
       "runnable": true,
       "title": "Verify Uploaded PDFs Are Indexed & Searchable",
-      "intended": "Confirm the 10 synthetic policy PDFs I uploaded to 'Company factuals' finished building and respond to direct search.",
-      "expected": "The index should be ready and answer a direct search query in under 100 milliseconds once loaded.",
-      "result": "Worked as expected: all 10 PDFs were split into 18 searchable chunks and marked Ready. Initial load took 2.3 seconds, after which local search took 19.2 ms.",
+      "intended": "Confirm the 10 synthetic policy PDFs I uploaded to 'Company factuals' finished building and respond to direct local retrieval.",
+      "expected": "The index should be ready and answer a direct local search query quickly once loaded (comparing against the sub-10 ms headline).",
+      "result": "Loaded 18 chunks in 2.34s; local in-memory search took 19.2 ms (vs. 1.0 ms on 50 sample docs in the Portal playground and Moss's sub-10 ms headline claim).",
       "verdict": "Met",
       "latency_ms": 19.21,
       "cost_usd": 0.0,
@@ -154,10 +155,10 @@
       "category": "Inference API",
       "tier": "Speed & Streaming",
       "runnable": true,
-      "title": "Streaming Speed (Time-to-First-Word) & Completeness",
-      "intended": "Measure how fast the AI starts streaming words back (with caching turned off) and confirm nothing gets dropped between streamed chunks and the final text.",
+      "title": "Streaming Speed (Time-to-First-Word, n=5) & Completeness",
+      "intended": "Measure how fast the AI starts streaming words back (cache=False, small sample n=5: 1 cold + 4 warm) and confirm nothing gets dropped between streamed chunks and the final text.",
       "expected": "First word arrives in under 800 ms consistently, and 100% of streamed text matches the final saved answer.",
-      "result": "Mostly met: warm runs started streaming in 137 to 144 ms (very fast), and all 5/5 responses matched word-for-word. However, the very first cold request took 0.96 seconds before the first word appeared.",
+      "result": "Mostly met (n=5): warm runs (4/5) started streaming in 137 to 144 ms, and 5/5 matched word-for-word. Cold run 1 spiked to 0.96s.",
       "verdict": "Partial",
       "latency_ms": 140.1,
       "cost_usd": 0.0,
@@ -336,11 +337,11 @@
       "category": "Inference API",
       "tier": "Caching",
       "runnable": true,
-      "title": "Repeat-Question Cache Speedup",
-      "intended": "Ask the exact same question twice with caching turned on to see if Moss serves the repeat answer faster.",
-      "expected": "The second identical question should return noticeably faster with the exact same answer.",
-      "result": "Worked as expected: first request took 56 ms, and the repeated request dropped to 54 ms (1.0x faster) with zero input tokens billed on the repeat.",
-      "verdict": "Met",
+      "title": "Repeat-Question Cache Speed & Token Savings",
+      "intended": "Ask the exact same question twice with caching turned on to see if Moss serves the repeat answer faster and cheaper.",
+      "expected": "The second identical question should return noticeably faster and reduce billed input tokens.",
+      "result": "Partial: caching saved token billing (Pass 2 billed 0 input tokens), but showed no latency gain at this size (56.0 ms vs 54.4 ms, 1.0x; server cache was already warm).",
+      "verdict": "Partial",
       "latency_ms": 54.43,
       "cost_usd": 0.0,
       "details": {
@@ -2351,7 +2352,7 @@
       "title": "Break-It: Enforce Tight $0.02 Spending Cap on 50-Page Crawl",
       "intended": "Break-It Test: Give the agent a massive 50-page crawl goal with a tiny $0.02 spending cap.",
       "expected": "Stop as soon as spending hits $0.02 and report a budget-exceeded error.",
-      "result": "Mostly worked: stopped automatically in 7.82s with 'budget_exceeded', saving us from burning credits. However, it slightly overshot the $0.02 limit to $0.0251 (~25% over) and saved zero debug screenshots.",
+      "result": "Mostly worked: stopped automatically in 7.82s with 'budget_exceeded', preventing runaway burn. However, total cost overshot the $0.02 cap by 25.5% to $0.0251 (SDK cost_usd reports $0.0248 model-only) and saved 0 trace screenshots.",
       "verdict": "Partial",
       "latency_ms": 7820.0,
       "cost_usd": 0.025099,
@@ -2429,10 +2430,10 @@
       "title": "Cancel Mid-Run & Live Browser Preview Link",
       "intended": "Start a long task with live_view enabled, wait 3 seconds, then cancel it to verify fast shutdown and live viewer URL.",
       "expected": "Receive a live_view URL to watch the browser, and have the task halt almost immediately when cancelled.",
-      "result": "Did not meet expectations: no live_view URL was returned, and after calling cancel() at 3 seconds the agent kept running for another ~19 seconds (5 AI calls) and still charged $0.046 before stopping.",
+      "result": "Did not meet expectations: live_url was empty (None), and after calling cancel() at 3s the agent kept running for ~19s (5 model calls) and billed $0.0460 total ($0.0456 model) before stopping.",
       "verdict": "Did Not Meet",
       "latency_ms": 24020.0,
-      "cost_usd": 0.045634,
+      "cost_usd": 0.045967,
       "details": {
         "timestamp_utc": "2026-11-25T17:13:52.375449+00:00",
         "test_group": "lifecycle_cancel",

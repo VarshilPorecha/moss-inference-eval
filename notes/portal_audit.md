@@ -38,4 +38,6 @@
 - **No explicit skip-all button at Step 1 for returning/API-first engineers:** Power users who already have scripts in mind still step through attribution (Step 2) and language choice (Step 3) unless they click *"Just exploring? See Moss in action"*, which isn't clearly labeled as "Skip to dashboard".
 - **Index build status & chunking transparency:** Step 5 lacks chunk-size/OCR/metadata options, and Step 6 only says `"is still building... usually within a few minutes"` without a live progress indicator or webhook/ready state before running `search.py`.
 - **OS-neutral env snippet:** Step 6 outputs `export VAR=...` (bash/zsh only), which fails copy-paste on Windows PowerShell (`$env:VAR=...`).
-- **2FA phone number validation bug (Security / UX):** During 2FA setup/verification, entering an invalid/malformed phone number still displays `"OTP sent"` instead of validating the number format upfront, creating silent delivery failures and confusing users.
+- **2FA phone number validation bug (Auth / UX):**
+  - **Observed:** During 2FA setup/verification, entering a malformed phone number still displays `"OTP sent"` instead of rejecting the invalid format upfront.
+  - **Likely impact (inferred):** Users who mistype a number may never receive an OTP and get stuck, and invalid numbers could trigger wasted SMS carrier attempts.

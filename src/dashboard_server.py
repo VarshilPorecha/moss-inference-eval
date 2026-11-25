@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import asyncio
+import hmac
 import json
 import os
 import threading
 import time
+from collections import defaultdict, deque
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
@@ -145,6 +147,45 @@ class MossBackendRuntime:
 
 RUNTIME: MossBackendRuntime | None = None
 RERUN_LOCK = threading.Lock()
+RATE_LOCK = threading.Lock()
+CHAT_IP_TIMESTAMPS: dict[str, deque[float]] = defaultdict(deque)
+CHAT_GLOBAL_TIMESTAMPS: deque[float] = deque()
+
+
+def _is_public_deploy() -> bool:
+    return bool(os.environ.get("RENDER") or os.environ.get("PORT"))
+
+
+def _public_rerun_allowed() -> bool:
+    default = "false" if _is_public_deploy() else "true"
+    return os.environ.get("ENABLE_PUBLIC_RERUN", default).strip().lower() == "true"
+
+
+def _check_admin_password(headers: Any, body: dict[str, Any]) -> bool:
+    expected = os.environ.get("DASHBOARD_ADMIN_PASSWORD", "").strip()
+    if not expected:
+        return False
+    provided = (headers.get("X-Admin-Password") or body.get("admin_password") or "").strip()
+    return bool(provided) and hmac.compare_digest(provided, expected)
+
+
+def _check_chat_rate_limit(client_ip: str) -> str | None:
+    per_min = int(os.environ.get("CHAT_RATE_LIMIT_PER_MIN", "8"))
+    per_day = int(os.environ.get("CHAT_DAILY_LIMIT", "150"))
+    now = time.time()
+    with RATE_LOCK:
+        q_ip = CHAT_IP_TIMESTAMPS[client_ip]
+        while q_ip and now - q_ip[0] > 60.0:
+            q_ip.popleft()
+        while CHAT_GLOBAL_TIMESTAMPS and now - CHAT_GLOBAL_TIMESTAMPS[0] > 86400.0:
+            CHAT_GLOBAL_TIMESTAMPS.popleft()
+        if len(q_ip) >= per_min:
+            return f"Rate limit exceeded ({per_min} chat requests/minute per IP). Please wait a moment."
+        if len(CHAT_GLOBAL_TIMESTAMPS) >= per_day:
+            return f"Daily public chat cap reached ({per_day}/day) to protect project credits."
+        q_ip.append(now)
+        CHAT_GLOBAL_TIMESTAMPS.append(now)
+    return None
 
 
 class DashboardHandler(BaseHTTPRequestHandler):
@@ -198,6 +239,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 return
         if self.path == "/api/chat":
             try:
+                client_ip = (self.headers.get("X-Forwarded-For") or self.client_address[0]).split(",")[0].strip()
+                limit_err = _check_chat_rate_limit(client_ip)
+                if limit_err:
+                    self._send_json(HTTPStatus.TOO_MANY_REQUESTS, {"error": limit_err})
+                    return
                 body = self._read_json()
                 message = (body.get("message") or "").strip()
                 if not message:
@@ -221,6 +267,17 @@ class DashboardHandler(BaseHTTPRequestHandler):
         if self.path == "/api/rerun":
             try:
                 body = self._read_json()
+                if not _public_rerun_allowed() and not _check_admin_password(self.headers, body):
+                    self._send_json(
+                        HTTPStatus.FORBIDDEN,
+                        {
+                            "error": (
+                                "Live test re-runs are locked on the public deployment to protect credits. "
+                                "Enter the admin password or run locally."
+                            )
+                        },
+                    )
+                    return
                 test_ids = body.get("test_ids") or []
                 if not isinstance(test_ids, list) or not test_ids:
                     self._send_json(HTTPStatus.BAD_REQUEST, {"error": "Provide non-empty test_ids list"})

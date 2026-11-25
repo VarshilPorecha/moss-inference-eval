@@ -15,6 +15,14 @@ services:
         value: https://inference.moss.dev/v1
       - key: MOSS_INDEX_NAME
         value: Company factuals
+      - key: ENABLE_PUBLIC_RERUN
+        value: "false"
+      - key: CHAT_RATE_LIMIT_PER_MIN
+        value: "8"
+      - key: CHAT_DAILY_LIMIT
+        value: "150"
+      - key: DASHBOARD_ADMIN_PASSWORD
+        sync: false
       - key: MOSS_PROJECT_ID
         sync: false
       - key: MOSS_PROJECT_KEY

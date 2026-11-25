@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import statistics
 from pathlib import Path
 from typing import Any
@@ -49,9 +50,9 @@ def build_records() -> dict[str, Any]:
                 "tier": "Setup Check",
                 "runnable": True,
                 "title": "Verify Uploaded PDFs Are Indexed & Searchable",
-                "intended": "Confirm the 10 synthetic policy PDFs I uploaded to 'Company factuals' finished building and respond to direct search.",
-                "expected": "The index should be ready and answer a direct search query in under 100 milliseconds once loaded.",
-                "result": f"Worked as expected: all 10 PDFs were split into {preflight.get('doc_count')} searchable chunks and marked Ready. Initial load took {preflight.get('load_ms') / 1000:.1f} seconds, after which local search took {preflight.get('direct_query_ms'):.1f} ms.",
+                "intended": "Confirm the 10 synthetic policy PDFs I uploaded to 'Company factuals' finished building and respond to direct local retrieval.",
+                "expected": "The index should be ready and answer a direct local search query quickly once loaded (comparing against the sub-10 ms headline).",
+                "result": f"Loaded {preflight.get('doc_count')} chunks in {preflight.get('load_ms') / 1000:.2f}s; local in-memory search took {preflight.get('direct_query_ms'):.1f} ms (vs. 1.0 ms on 50 sample docs in the Portal playground and Moss's sub-10 ms headline claim).",
                 "verdict": "Met",
                 "latency_ms": preflight.get("direct_query_ms"),
                 "cost_usd": 0.0,
@@ -72,10 +73,10 @@ def build_records() -> dict[str, Any]:
                 "category": "Inference API",
                 "tier": "Speed & Streaming",
                 "runnable": True,
-                "title": "Streaming Speed (Time-to-First-Word) & Completeness",
-                "intended": "Measure how fast the AI starts streaming words back (with caching turned off) and confirm nothing gets dropped between streamed chunks and the final text.",
+                "title": "Streaming Speed (Time-to-First-Word, n=5) & Completeness",
+                "intended": "Measure how fast the AI starts streaming words back (cache=False, small sample n=5: 1 cold + 4 warm) and confirm nothing gets dropped between streamed chunks and the final text.",
                 "expected": "First word arrives in under 800 ms consistently, and 100% of streamed text matches the final saved answer.",
-                "result": f"Mostly met: warm runs started streaming in {min(warm):.0f} to {max(warm):.0f} ms (very fast), and all {parity_ok}/{len(streams)} responses matched word-for-word. However, the very first cold request took {ttfts[0] / 1000:.2f} seconds before the first word appeared.",
+                "result": f"Mostly met (n=5): warm runs (4/5) started streaming in {min(warm):.0f} to {max(warm):.0f} ms, and {parity_ok}/{len(streams)} matched word-for-word. Cold run 1 spiked to {ttfts[0] / 1000:.2f}s.",
                 "verdict": "Partial",
                 "latency_ms": round(statistics.median(warm), 1),
                 "cost_usd": 0.0,
@@ -86,19 +87,32 @@ def build_records() -> dict[str, Any]:
     caches_all = [r for r in inf_rows if r.get("test_group") == "cache_check"]
     caches = caches_all[-2:] if len(caches_all) >= 2 else caches_all
     if len(caches) >= 2:
-        speedup = caches[0]["total_ms"] / max(caches[1]["total_ms"], 1)
+        p1_ms = caches[0]["total_ms"]
+        p2_ms = caches[1]["total_ms"]
+        p1_tok = (caches[0].get("usage") or {}).get("input_tokens") or 0
+        p2_tok = (caches[1].get("usage") or {}).get("input_tokens") or 0
+        speedup = p1_ms / max(p2_ms, 1)
+        if speedup >= 1.5:
+            cache_verdict = "Met"
+            cache_res = f"Met: Pass 1 took {p1_ms:.1f} ms -> Pass 2 dropped to {p2_ms:.1f} ms ({speedup:.1f}x faster), saving input tokens ({p1_tok} -> {p2_tok})."
+        else:
+            cache_verdict = "Partial"
+            cache_res = (
+                f"Partial: caching saved token billing (Pass 2 billed {p2_tok} input tokens), "
+                f"but showed no latency gain at this size ({p1_ms:.1f} ms vs {p2_ms:.1f} ms, {speedup:.1f}x; server cache was already warm)."
+            )
         cases.append(
             {
                 "id": "INF-CACHE",
                 "category": "Inference API",
                 "tier": "Caching",
                 "runnable": True,
-                "title": "Repeat-Question Cache Speedup",
-                "intended": "Ask the exact same question twice with caching turned on to see if Moss serves the repeat answer faster.",
-                "expected": "The second identical question should return noticeably faster with the exact same answer.",
-                "result": f"Worked as expected: first request took {caches[0]['total_ms']:.0f} ms, and the repeated request dropped to {caches[1]['total_ms']:.0f} ms ({speedup:.1f}x faster) with zero input tokens billed on the repeat.",
-                "verdict": "Met",
-                "latency_ms": caches[1]["total_ms"],
+                "title": "Repeat-Question Cache Speed & Token Savings",
+                "intended": "Ask the exact same question twice with caching turned on to see if Moss serves the repeat answer faster and cheaper.",
+                "expected": "The second identical question should return noticeably faster and reduce billed input tokens.",
+                "result": cache_res,
+                "verdict": cache_verdict,
+                "latency_ms": p2_ms,
                 "cost_usd": 0.0,
                 "details": {"pass_1": caches[0], "pass_2": caches[1]},
             }
@@ -469,8 +483,8 @@ def build_records() -> dict[str, Any]:
         elif cid == "T4_budget_limit_probe":
             verdict = "Partial"
             res_txt = (
-                f"Mostly worked: stopped automatically in {r['wall_seconds']}s with 'budget_exceeded', saving us from burning credits. "
-                f"However, it slightly overshot the $0.02 limit to ${total_usd:.4f} (~25% over) and saved zero debug screenshots."
+                f"Mostly worked: stopped automatically in {r['wall_seconds']}s with 'budget_exceeded', preventing runaway burn. "
+                f"However, total cost overshot the $0.02 cap by 25.5% to ${total_usd:.4f} (SDK cost_usd reports ${cost:.4f} model-only) and saved 0 trace screenshots."
             )
         elif r.get("status") == "completed" and gw_pass and loc_pass:
             verdict = "Met"
@@ -503,6 +517,7 @@ def build_records() -> dict[str, Any]:
 
     if latest_cancel:
         cost = (latest_cancel.get("usage") or {}).get("cost_usd") or 0.0
+        total_usd = ((latest_cancel.get("usage") or {}).get("raw") or {}).get("cost", {}).get("total_usd") or cost
         cases.append(
             {
                 "id": "T4_cancel_lifecycle",
@@ -512,10 +527,10 @@ def build_records() -> dict[str, Any]:
                 "title": "Cancel Mid-Run & Live Browser Preview Link",
                 "intended": "Start a long task with live_view enabled, wait 3 seconds, then cancel it to verify fast shutdown and live viewer URL.",
                 "expected": "Receive a live_view URL to watch the browser, and have the task halt almost immediately when cancelled.",
-                "result": f"Did not meet expectations: no live_view URL was returned, and after calling cancel() at 3 seconds the agent kept running for another ~19 seconds (5 AI calls) and still charged ${cost:.3f} before stopping.",
+                "result": f"Did not meet expectations: live_url was empty (None), and after calling cancel() at 3s the agent kept running for ~19s (5 model calls) and billed ${total_usd:.4f} total (${cost:.4f} model) before stopping.",
                 "verdict": "Did Not Meet",
                 "latency_ms": round(latest_cancel["wall_seconds"] * 1000, 1),
-                "cost_usd": cost,
+                "cost_usd": total_usd,
                 "details": latest_cancel,
             }
         )
@@ -637,6 +652,11 @@ def build_records() -> dict[str, Any]:
         if c["category"] == "Tasks API" and c["latency_ms"] and c["latency_ms"] >= 1000
     ]
 
+    is_public = bool(os.environ.get("RENDER") or os.environ.get("PORT"))
+    public_rerun_locked = (
+        os.environ.get("ENABLE_PUBLIC_RERUN", "false" if is_public else "true").strip().lower() != "true"
+    )
+
     return {
         "kpis": {
             "total_cases": len(cases),
@@ -652,6 +672,7 @@ def build_records() -> dict[str, Any]:
             "warm_ttft_p50_ms": round(statistics.median(ttfts_raw[1:]), 1) if len(ttfts_raw) > 1 else None,
             "rag_exact_match": f"{sum(1 for r in rags if r['grounded_matched'])}/{len(rags)}",
             "tasks_tier1_3_pass": t1_3_str,
+            "public_rerun_locked": public_rerun_locked,
         },
         "charts": {
             "inference_latency": [
@@ -918,7 +939,8 @@ HTML_TEMPLATE = """<!doctype html>
         <button class="btn-sm" onclick="selectCategory('Tasks API')">Select Tasks</button>
         <button class="btn-sm" onclick="clearSelection()">Clear Selection</button>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <input id="adminPwd" type="password" class="text-in" placeholder="Admin password (if locked)" style="display:none;width:190px;padding:5px 9px;font-size:12px;" />
         <span id="rerunStatus" class="mono" style="color:var(--muted)">0 tests selected</span>
         <button class="btn-primary" id="rerunBtn" onclick="rerunSelected()" disabled>Re-Run Selected Tests</button>
       </div>
@@ -1052,11 +1074,13 @@ HTML_TEMPLATE = """<!doctype html>
       const items = [
         { label: 'Total Tests Evaluated', val: k.total_cases, hint: `${k.met} Met · ${k.partial} Partial · ${k.did_not_meet} Broken` },
         { label: 'Expectation Met Rate', val: `${Math.round((k.met / k.total_cases) * 100)}%`, hint: `${k.met}/${k.total_cases} strictly met` },
-        { label: 'Warm Streaming Speed', val: `${k.warm_ttft_p50_ms} ms`, hint: 'Typical time to first word' },
-        { label: 'PDF Knowledge Accuracy', val: k.rag_exact_match, hint: 'vs. 0/8 without index · 3/3 abstained' },
+        { label: 'Warm Streaming Speed', val: `${k.warm_ttft_p50_ms} ms`, hint: 'n=5 (1 cold, 4 warm) · cache=False' },
+        { label: 'PDF Knowledge Accuracy', val: k.rag_exact_match, hint: 'n=8 · vs. 0/8 ungrounded · 3/3 abstained' },
         { label: 'Browser Tasks (Tiers 1-3)', val: k.tasks_tier1_3_pass, hint: 'Static, multi-step, JS & PyPI' },
         { label: 'Live Cumulative Spend', val: `$${k.total_cost_usd.toFixed(4)}`, hint: `$${k.remaining_credit_usd.toFixed(2)} left · ${k.total_api_runs} runs (${k.chat_turns} chat)` },
       ];
+      const pwdEl = document.getElementById('adminPwd');
+      if (pwdEl) pwdEl.style.display = k.public_rerun_locked ? 'inline-block' : 'none';
       document.getElementById('kpiGrid').innerHTML = items.map(i => `
         <div class="kpi">
           <div class="label">${i.label}</div>
@@ -1139,9 +1163,12 @@ HTML_TEMPLATE = """<!doctype html>
       status.style.color = 'var(--amber)';
 
       try {
+        const pwd = (document.getElementById('adminPwd')?.value || '').trim();
+        const headers = {'Content-Type': 'application/json'};
+        if (pwd) headers['X-Admin-Password'] = pwd;
         const res = await fetch('/api/rerun', {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
+          headers,
           body: JSON.stringify({ test_ids: ids })
         });
         const out = await res.json();

@@ -183,7 +183,7 @@ def generate_pdf() -> Path:
 
     pdf.add_banner(
         "Moss Inference Work Sample - Complete Project & Evaluation Report",
-        f"Portal Audit | Inference API | Tasks API | Live RAG Chatbot | Total Cases: {k['total_cases']} | Spend: ${k['total_cost_usd']:.4f} / $10.00",
+        f"Portal Audit (3 checks) | Automated Suite ({k['total_cases']} cases, {k['total_api_runs']} total calls) | Cumulative Spend: ${k['total_cost_usd']:.4f} / $10.00",
     )
 
     # 1. What We Built & Tried First
@@ -205,22 +205,22 @@ def generate_pdf() -> Path:
     )
     pdf.add_bullet(
         "Step 4 - Combined Demo, Chatbot & Dashboard",
-        "Built src/demo_research_agent.py (combining Tasks API + Moss Index + Inference API), plus src/dashboard_server.py and src/build_dashboard.py providing a live RAG chatbot and selective test re-runner.",
+        "Built src/demo_research_agent.py (combining Tasks API + Moss Index + Inference API), plus src/dashboard_server.py and src/build_dashboard.py providing a live RAG chatbot and selective test re-runner (re-runs locked on public Render deployment to protect credits).",
     )
 
     # 2. What Are Inference API & Tasks API?
     pdf.add_heading("2. What Are the Inference API and Tasks API?")
     pdf.add_bullet(
         "Moss Retrieval (MossClient)",
-        "Moss's core semantic/hybrid search runtime. You upload documents (PDFs/DOCX/URLs) into an index, load the index into memory (load_index), and perform fast sub-50ms local similarity lookups (client.query).",
+        "Moss's core semantic/hybrid search runtime. You upload documents (PDFs/DOCX/URLs) into an index, load the index into memory (load_index), and perform local similarity lookups (client.query: measured 19.2 ms on our loaded 18-chunk index vs. 1.0 ms on 50 sample docs in the Portal browser playground and Moss's sub-10 ms headline claim).",
     )
     pdf.add_bullet(
         "Inference API (client.responses.create)",
-        "An OpenAI Responses-compatible LLM gateway (https://inference.moss.dev/v1, default model moss/fastlane-1) that automatically retrieves relevant facts from your specified Moss indexes (indexes=[...]) and injects them into the model prompt before streaming or returning a reply. Supports tool calls, multi-turn conversations, reply caching (cache=True), and BYOK vendor models.",
+        "An OpenAI Responses-compatible LLM gateway (https://inference.moss.dev/v1, default model moss/fastlane-1) that retrieves facts from your specified Moss indexes (indexes=[...]) and injects them into the prompt before streaming or returning a reply. Supports tool calls, multi-turn conversations, reply caching (cache=True), and BYOK vendor models. Grounded calls often traded higher latency for accuracy (e.g., G5: 927 ms grounded vs. 146 ms ungrounded).",
     )
     pdf.add_bullet(
         "Tasks API (client.tasks.run / create / cancel / trace)",
-        "An autonomous cloud browser agent runtime. Instead of writing fragile CSS/Playwright selectors, you give a plain-English goal, a starting URL (environment={'type': 'browser', 'start_url': ...}), an optional JSON output_schema, and runtime/cost limits. A remote browser executes multi-step clicks, JS waits, and extraction, then returns structured JSON, gateway schema verification, token/browser cost, step traces, and screenshots.",
+        "An autonomous cloud browser agent runtime. Instead of writing CSS/Playwright selectors, you give a plain-English goal, a starting URL (environment={'type': 'browser', 'start_url': ...}), an optional JSON output_schema, and runtime/cost limits. A remote browser executes multi-step clicks, JS waits, and extraction, then returns structured JSON, gateway schema verification, token/browser cost, step traces, and screenshots.",
     )
 
     # 3. End-to-End Pipeline Architecture
@@ -232,97 +232,91 @@ def generate_pdf() -> Path:
         "2) Evaluation Execution: Python async scripts (eval_inference.py, eval_tasks.py, demo_research_agent.py) load credentials from .env, execute controlled tests against inference.moss.dev/v1, cross-check Tasks outputs locally using JSON Schema Draft7Validator, and append scrubbed telemetry to logs/*.jsonl."
     )
     pdf.add_para(
-        "3) Interactive Dashboard & RAG Chatbot: src/build_dashboard.py aggregates the latest run per test ID into plain-language summaries (dashboard/index.html). src/dashboard_server.py serves the UI at localhost:8765, routes live user chat messages to MossClient.query (chunk preview) + MossInference.responses.create (/api/chat), and allows re-running any chosen subset of tests via src/test_runner.py (/api/rerun)."
+        "3) Interactive Dashboard & RAG Chatbot: src/build_dashboard.py aggregates the latest run per test ID plus cumulative spend/tokens across all historical logs (dashboard/index.html). src/dashboard_server.py serves the UI, routes live chat messages to MossClient.query + MossInference.responses.create (/api/chat, rate-limited on public hosting), and enables selective test re-runs locally (/api/rerun, disabled by default on public Render)."
     )
 
     # 4. How Tests Were Conducted
-    pdf.add_heading("4. How Tests Were Conducted (Methodology & Guardrails)")
+    pdf.add_heading("4. How Tests Were Conducted (Methodology, Sample Sizes & Guardrails)")
     pdf.add_bullet(
         "Preventing LLM Memorization",
         "We used fictional numbers (19-day return window, 12.5% fee, ERR-419-SYNC, 47-min P1 SLA, ESC-KST-409) absent from LLM training data, and ran every RAG prompt both ungrounded (retrieve=False) and grounded (indexes=['Company factuals']) to prove retrieval.",
     )
     pdf.add_bullet(
-        "True Latency Measurement",
-        "Streaming TTFT and RAG runs explicitly set cache=False so cached hits didn't mask real latency; caching was benchmarked separately with cache=True.",
+        "Small Sample Sizes & True Latency",
+        "Sample sizes are intentionally small for fast directional evaluation: n=5 streaming TTFT runs (1 cold + 4 warm with cache=False), n=8 RAG grounding questions, n=3 abstention checks, and single runs per Tasks API tier case. Caching was tested separately (cache=True).",
     )
     pdf.add_bullet(
         "Budget & Timeout Protection",
-        f"Every browser task enforced explicit limits (max_cost_usd $0.10-$0.35, max_runtime_seconds 60-120s). Total logged spend across all {k['total_cases']} evaluated cases was ${k['total_cost_usd']:.4f} out of the $10.00 credit.",
+        f"Every browser task enforced explicit limits (max_cost_usd $0.10-$0.35, max_runtime_seconds 60-120s). Cumulative logged spend (total_usd across all {k['total_api_runs']} API calls, including re-runs) was ${k['total_cost_usd']:.4f} out of the $10.00 credit.",
     )
 
     # 5. Summary & Full Test-by-Test Results
     pdf.add_heading("5. Tests Conducted & Pass/Fail Results")
     pdf.add_para(
-        f"Overall Scorecard: {k['total_cases']} total cases evaluated | Met Expectation: {k['met']} | Partially Met: {k['partial']} | Failed / Broken: {k['did_not_meet']} | Warm Streaming TTFT p50: {k['warm_ttft_p50_ms']} ms | Synthetic KB Grounding: {k['rag_exact_match']} (vs. 0/8 ungrounded) | Tasks Tiers 1-3: {k['tasks_tier1_3_pass']}."
+        f"Automated Suite Scorecard: {k['total_cases']} cases | Met: {k['met']} | Partial: {k['partial']} | Broken / Did Not Meet: {k['did_not_meet']} | Warm Streaming TTFT p50 (4 warm of n=5): {k['warm_ttft_p50_ms']} ms | Synthetic KB Grounding (n=8): {k['rag_exact_match']} (vs. 0/8 ungrounded) | Tasks Tiers 1-3: {k['tasks_tier1_3_pass']}."
     )
     for case in data["cases"]:
         pdf.add_case_block(case)
 
     # 6. Challenges, Failed Tests, Real-World Impact & Fixes
-    pdf.add_heading("6. Challenges, Real-World Impact & Recommended Fixes")
+    pdf.add_heading("6. Challenges, Observed vs. Inferred Impact & Fixes")
 
     findings = [
         (
-            "1. Portal 2FA Accepts Invalid Phone Format & Says 'OTP Sent' (PORTAL-03)",
-            "During 2FA setup, entering a malformed phone number still displays 'OTP sent' without rejecting the invalid format.",
-            "Real-World Impact: Users never receive verification codes and get locked out; attackers or buggy clients can trigger wasted SMS carrier requests.",
-            "Fix: Validate phone numbers against strict E.164 rules on both frontend form submit and backend /otp endpoint before sending SMS; return a clear 400 validation error.",
+            "1. Portal 2FA Accepts Malformed Phone Format & Shows 'OTP Sent' (Observed in UI)",
+            "During 2FA setup, entering an incorrectly formatted phone number still displays 'OTP sent' without rejecting the invalid format.",
+            "Users mistyping a phone number may not receive an OTP and get stuck in signup, and invalid numbers could trigger failed SMS dispatch attempts.",
+            "Validate phone numbers against strict E.164 rules on both frontend form submit and backend /otp endpoint before sending SMS; return a clear 400 validation error.",
         ),
         (
-            "2. Inference/Tasks & Credits Hidden in /inference Onboarding (PORTAL-02)",
+            "2. Inference/Tasks & Credits Hidden in /inference Onboarding (Observed in UI)",
             "Signing up via portal.usemoss.dev/inference runs a 6-step retrieval-only wizard without introducing Inference API, Tasks API, models, or the $10 credit balance; Step 6 emits bash 'export' commands on Windows.",
-            "Real-World Impact: Developers evaluating Inference/Tasks feel lost during onboarding and Windows users hit copy-paste friction.",
-            "Fix: Route /inference signups to an Inference/Tasks quickstart with a Skip-to-Dashboard option, live indexing progress, credit meter, and OS-tabbed env snippets (Bash + PowerShell).",
+            "Developers evaluating Inference/Tasks may struggle to find the right endpoints initially, and Windows users hit copy-paste friction.",
+            "Route /inference signups to an Inference/Tasks quickstart with a Skip-to-Dashboard option, live indexing progress, credit meter, and OS-tabbed env snippets (Bash + PowerShell).",
         ),
         (
-            "3. Empty Input Returns 200 OK & Hallucinates About an Image (INF-ERR-EMPTY_INPUT)",
-            "Calling responses.create(model='moss', input='') did not raise 400; it completed and replied 'Based on the image provided, I cannot determine...'.",
-            "Real-World Impact: Production chatbots receiving an accidental blank string return bizarre hallucinated text to end users instead of catching a client bug.",
-            "Fix: Enforce non-empty input validation at the API gateway and return 400 invalid_request_error immediately.",
-        ),
-        (
-            "4. Nonexistent Index Returns 403 Instead of 404 (INF-ERR-NONEXISTENT_INDEX)",
-            "Passing an unknown index name returned HTTP 403 permission_error ('index outside this project').",
-            "Real-World Impact: Developers debugging a simple typo waste time troubleshooting IAM/project credentials instead of fixing the index name.",
-            "Fix: Distinguish missing indexes from cross-project unauthorized indexes and return 404 not_found_error.",
-        ),
-        (
-            "5. Multi-Doc / Multi-Part Recall Dilution & Small-Model Slips (G4, G3, G6, DEMO-01)",
-            "Single-query retrieval missed secondary PDF chunks when a prompt spanned multiple documents (G4 missed $349 MSRP in PDF 05; DEMO-01 missed ESC-KST-ENT1 in PDF 08), and moss/fastlane-1 slipped on two details (5 GHz vs 2.4 GHz; Dec 1 vs Dec 24).",
-            "Real-World Impact: Complex customer-support queries requiring policy overrides or multi-doc synthesis can omit critical rules or misstate numbers.",
-            "Fix: Support optional query decomposition / multi-query retrieval, expose retrieved chunk citations in Response, and allow higher-accuracy model tiers for complex synthesis.",
-        ),
-        (
-            "6. Tasks API Marks Failed Schema Validation as status='completed' (T4_missing_required_isbn)",
+            "3. Tasks API Marks Failed Schema Validation as status='completed' (T4_missing_required_isbn)",
             "When a required field (isbn_13) did not exist on the page, verification.passed was False, yet task.status remained 'completed' with error=None.",
-            "Real-World Impact: Downstream pipelines checking only task.status == 'completed' silently ingest null or broken records into databases.",
-            "Fix: Introduce a distinct status (e.g., 'completed_invalid' or 'failed' with error.code='schema_validation_failed') or add strict_schema=True enforcement.",
+            "Downstream pipelines checking only task.status == 'completed' can silently ingest null or invalid records into production databases.",
+            "Introduce a distinct terminal status (e.g., 'completed_invalid' or 'failed' with error.code='schema_validation_failed') or add strict_schema=True enforcement.",
         ),
         (
-            "7. Slow Task Cancellation (~19s Lag) & Missing live_url (T4_cancel_lifecycle)",
-            "Calling cancel() 3s after task creation still ran 5 model calls for ~19s ($0.0462 billed), and live_view=True returned live_url=None.",
-            "Real-World Impact: Users aborting runaway jobs still pay for ~20s of extra compute, and operators cannot watch live browser runs for debugging.",
-            "Fix: Check an immediate cancellation token between browser actions and populate live_url as soon as the browser session allocates.",
+            "4. Slow Task Cancellation (~19s Lag) & Missing live_url (T4_cancel_lifecycle)",
+            "Calling cancel() 3s after task creation still ran 5 model calls for ~19s ($0.0462 total_usd billed), and live_view=True returned live_url=None.",
+            "Users aborting runaway jobs may pay for ~20s of extra compute, and operators lose live browser observability during runs.",
+            "Check an immediate cancellation token between browser actions and populate live_url as soon as the browser session allocates.",
         ),
         (
-            "8. Budget Cap Overshoot, Missing Trace Files & SDK Cost Mismatch (T4_budget_limit_probe)",
-            "A $0.02 cap aborted cleanly (budget_exceeded) but overshot to $0.0248 (~25%) and saved 0 screenshots; also TaskUsage.cost_usd drops browser_usd found in raw.cost.total_usd.",
-            "Real-World Impact: Unexpected billing drift on tight budgets, no visual debugging artifacts on failed runs, and inaccurate cost telemetry in user dashboards.",
-            "Fix: Perform pre-call cost reservation before each model turn, flush captured screenshots on abort, and expose total_cost_usd on TaskUsage.",
+            "5. Budget Cap Overshoot, Missing Trace Files & SDK Cost Mismatch (T4_budget_limit_probe)",
+            "A $0.02 cap aborted cleanly (budget_exceeded) in 7.8s, but total_usd overshot by 25.5% to $0.0251 and saved 0 screenshots; also TaskUsage.cost_usd reports $0.0248 (model_usd only), omitting browser_usd.",
+            "Billing drift on tight micro-budgets, missing visual debug artifacts on failed runs, and mismatched cost reporting if callers read TaskUsage.cost_usd alone.",
+            "Perform pre-call cost reservation before each model turn, flush captured screenshots on abort, and expose total_cost_usd on TaskUsage.",
         ),
         (
-            "9. Undocumented 60s Runtime Floor & Parallel Latency Variance (T4_min_runtime_floor, T4_parallel_2)",
-            "max_runtime_seconds=45 triggered a 400 error (must be 60..7200), undocumented in SDK docstrings; twin concurrent tasks showed 2.4x variance (50.08s vs 20.48s).",
-            "Real-World Impact: Unexpected 400 errors in production integrations and unpredictable tail latency under concurrent workloads.",
-            "Fix: Document min/max bounds in TaskLimitsParam (or validate client-side) and maintain pre-warmed browser pools to smooth cold-start queue jitter.",
+            "6. Undocumented 60s Runtime Floor & Parallel Latency Variance (T4_min_runtime_floor, T4_parallel_2)",
+            "max_runtime_seconds=45 triggered a 400 error (must be 60..7200), undocumented in TaskLimitsParam docstrings; twin concurrent example.com tasks showed 2.4x variance (50.08s vs 20.48s).",
+            "Unexpected 400 errors in client integrations and uneven tail latency under concurrent browser workloads.",
+            "Document min/max bounds in TaskLimitsParam (or validate client-side) and maintain pre-warmed browser pools to smooth queue jitter.",
+        ),
+        (
+            "7. Nonexistent Index Returns 403 Instead of 404 (INF-ERR-NONEXISTENT_INDEX)",
+            "Passing an unknown index name returned HTTP 403 permission_error ('index outside this project').",
+            "Developers debugging a simple index typo may spend extra time troubleshooting project credentials/IAM instead of checking the index name.",
+            "Distinguish missing indexes from cross-project unauthorized indexes and return 404 not_found_error.",
+        ),
+        (
+            "8. Multi-Doc Recall Dilution, Small-Model Slips & Cache Behavior (G4, G3, G6, INF-CACHE, DEMO-01)",
+            "Single-query retrieval missed secondary PDF chunks on cross-doc prompts (G4 missed $349 MSRP in PDF 05; DEMO-01 missed ESC-KST-ENT1 in PDF 08), fastlane-1 slipped on two details (5 GHz vs 2.4 GHz; Dec 1 vs Dec 24), empty input returned 200 with an image-related reply, and warm INF-CACHE repeats saved tokens (1,198 -> 0) without a latency drop (56.0 ms vs 54.4 ms).",
+            "Complex multi-document queries may omit secondary rules, and blank-input client bugs may pass through silently.",
+            "Reject empty input with 400, support optional query decomposition / multi-query retrieval, expose retrieved chunk citations in Response, and allow higher-accuracy model tiers.",
         ),
     ]
 
     for title, what, impact, fix in findings:
         pdf.add_subheading(title, (0.55, 0.14, 0.14))
-        pdf.add_bullet("Observed Issue", what, indent=8)
-        pdf.add_bullet("Real-World Impact", impact.replace("Real-World Impact: ", ""), indent=8)
-        pdf.add_bullet("How to Fix", fix.replace("Fix: ", ""), indent=8)
+        pdf.add_bullet("Observed", what, indent=8)
+        pdf.add_bullet("Likely Impact (Inferred)", impact, indent=8)
+        pdf.add_bullet("How to Fix", fix, indent=8)
         pdf.y -= 3
 
     out_path = ROOT_DIR / "Moss_Inference_Project_Report.pdf"

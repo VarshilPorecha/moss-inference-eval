@@ -88,21 +88,30 @@ def build_report() -> str:
     runs = [r for r in task_rows if r.get("test_group") == "task_run"]
     lines.append("\n## 2. Tasks API Metrics\n")
     if runs:
-        direct_cost = sum(
-            (r.get("usage") or {}).get("cost_usd") or 0.0 for r in task_rows
-        )
+        def _row_total_usd(r: dict[str, Any]) -> float:
+            u = r.get("usage") or {}
+            t = (u.get("raw") or {}).get("cost", {}).get("total_usd")
+            return float(t if t is not None else (u.get("cost_usd") or 0.0))
+
+        direct_cost = sum(_row_total_usd(r) for r in task_rows)
         parallel_cost = sum(
             item.get("cost_usd") or 0.0
             for r in task_rows
             if r.get("test_group") == "parallel_tasks"
             for item in r.get("results", [])
         )
-        total_cost = direct_cost + parallel_cost
-        lines.append(f"**Total Logged Tasks Spend (model_usd):** ${total_cost:.4f}\n")
-        lines.append("| Case ID | Tier | Status | Wall (s) | Cost ($) | GW Verif | Local Schema | Error |")
+        demo_cost = sum(
+            _row_total_usd(d.get("task") or {})
+            for d in demo_rows
+        )
+        total_cost = direct_cost + parallel_cost + demo_cost
+        lines.append(
+            f"**Cumulative Logged Spend (total_usd, incl. browser fees & re-runs):** ${total_cost:.4f}\n"
+        )
+        lines.append("| Case ID | Tier | Status | Wall (s) | Total Cost ($) | GW Verif | Local Schema | Error |")
         lines.append("| :--- | :---: | :--- | :---: | :---: | :---: | :---: | :--- |")
         for r in runs:
-            cost = (r.get("usage") or {}).get("cost_usd")
+            cost = _row_total_usd(r) if r.get("usage") else None
             cost_str = f"{cost:.4f}" if isinstance(cost, (int, float)) else "-"
             gw = (r.get("verification") or {}).get("passed")
             err = (r.get("error") or {}).get("code") or r.get("error_type") or "-"

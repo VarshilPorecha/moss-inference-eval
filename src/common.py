@@ -18,6 +18,7 @@ LOGS_DIR = ROOT_DIR / "logs"
 INFERENCE_LOG = LOGS_DIR / "inference_runs.jsonl"
 TASKS_LOG = LOGS_DIR / "tasks_runs.jsonl"
 DEMO_LOG = LOGS_DIR / "demo_runs.jsonl"
+CHAT_LOG = LOGS_DIR / "chat_runs.jsonl"
 
 
 def load_config() -> dict[str, str]:

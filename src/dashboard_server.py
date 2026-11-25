@@ -13,7 +13,7 @@ from typing import Any
 from moss import QueryOptions
 
 from src.build_dashboard import DASHBOARD_DIR, write_dashboard
-from src.common import load_config, make_inference_client, make_moss_client
+from src.common import CHAT_LOG, append_jsonl, load_config, make_inference_client, make_moss_client
 from src.test_runner import run_selected_tests
 
 
@@ -91,22 +91,39 @@ class MossBackendRuntime:
             )
         latency_ms = round((time.perf_counter() - t0) * 1000.0, 1)
 
+        usage_dict = {
+            "input_tokens": resp.usage.input_tokens if resp.usage else None,
+            "output_tokens": resp.usage.output_tokens if resp.usage else None,
+            "total_tokens": resp.usage.total_tokens if resp.usage else None,
+            "cached_tokens": (
+                resp.usage.input_tokens_details.cached_tokens
+                if resp.usage and resp.usage.input_tokens_details
+                else 0
+            ),
+        }
+        append_jsonl(
+            CHAT_LOG,
+            {
+                "test_group": "live_chat",
+                "model": resp.model,
+                "index_name": index_name if use_rag else None,
+                "use_rag": use_rag,
+                "use_cache": use_cache,
+                "latency_ms": latency_ms,
+                "retrieval_ms": retrieval_ms,
+                "source_count": len(sources),
+                "usage": usage_dict,
+            },
+            [self.cfg["project_id"], self.cfg["project_key"]],
+        )
+
         return {
             "reply": resp.output_text,
             "model": resp.model,
             "latency_ms": latency_ms,
             "retrieval_ms": retrieval_ms,
             "sources": sources,
-            "usage": {
-                "input_tokens": resp.usage.input_tokens if resp.usage else None,
-                "output_tokens": resp.usage.output_tokens if resp.usage else None,
-                "total_tokens": resp.usage.total_tokens if resp.usage else None,
-                "cached_tokens": (
-                    resp.usage.input_tokens_details.cached_tokens
-                    if resp.usage and resp.usage.input_tokens_details
-                    else 0
-                ),
-            },
+            "usage": usage_dict,
         }
 
 
@@ -163,6 +180,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
                         use_cache=bool(body.get("use_cache", False)),
                     )
                 )
+                res["dashboard"] = write_dashboard()
                 self._send_json(HTTPStatus.OK, res)
             except Exception as exc:
                 self._send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(exc)})

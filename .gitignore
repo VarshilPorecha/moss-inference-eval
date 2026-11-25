@@ -6,3 +6,9 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 scratch/
+UX_MOSS.png
+ONE_PAGER.md
+MOSS_WORK_SAMPLE_PLAN.md
+Moss_Inference_Project_Report.pdf
+notes/portal_onboarding_ux.pdf
+logs/chat_runs.jsonl

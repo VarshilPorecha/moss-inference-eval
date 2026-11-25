@@ -6,35 +6,34 @@ Reproducible evaluation harness, adversarial "break-it" test suite, raw JSONL ex
 
 ```text
 .
-├── README.md                         # Project overview, setup, test plan, and reproduction steps
-├── MOSS_WORK_SAMPLE_PLAN.md          # Full planning doc (architecture, tests, benchmarks)
-├── ONE_PAGER.md                      # 1-page summary memo for hiring review
-├── Moss_Inference_Project_Report.pdf # Full 9-page evaluation & failure-analysis report
-├── requirements.txt                  # Python dependencies
-├── .env.example                      # Required environment variables
+├── README.md                     # Project overview, setup, test plan, and reproduction steps
+├── requirements.txt              # Python dependencies
+├── .env.example                  # Required environment variables
+├── render.yaml                   # Render Web Service blueprint
+├── Procfile                      # Process start command
+├── .python-version               # Pinned Python 3.12.8 for Render
 ├── fixtures/
-│   └── synthetic_kb/                 # 10 synthetic PDFs (Kestrel Systems KB) uploaded to Moss index
+│   └── synthetic_kb/             # 10 synthetic PDFs (Kestrel Systems KB) uploaded to Moss index
 ├── notes/
-│   ├── portal_audit.md               # UX/DX/2FA observations from portal.usemoss.dev/inference
-│   └── portal_onboarding_ux.pdf      # Captured onboarding screenshots (steps 1-5)
+│   └── portal_audit.md           # UX/DX/2FA observations from portal.usemoss.dev/inference
 ├── dashboard/
-│   ├── index.html                    # Interactive RAG chatbot + plain-English test bench UI
-│   └── data.json                     # Aggregated evaluation dataset (40 cases)
+│   ├── index.html                # Interactive RAG chatbot + plain-English test bench UI
+│   └── data.json                 # Aggregated evaluation dataset
 ├── src/
-│   ├── common.py                     # Client helpers, JSONL logger, cost tracker, schema validator
-│   ├── eval_inference.py             # Inference API suite (streaming, RAG grounding, errors, burst)
-│   ├── eval_tasks.py                 # Tasks API tiered benchmark & adversarial break-it suite
-│   ├── demo_research_agent.py        # Mini app combining Tasks API + Moss retrieval + Inference API
-│   ├── summarize_results.py          # Aggregates logs/*.jsonl into Markdown metrics tables
-│   ├── test_runner.py                # Selective test runner invoked by the interactive UI
-│   ├── build_dashboard.py            # Generates dashboard/index.html & data.json from logs/*.jsonl
-│   ├── dashboard_server.py           # Local server for live RAG chat (/api/chat) & re-runs (/api/rerun)
-│   └── generate_report_pdf.py        # Generates Moss_Inference_Project_Report.pdf from live logs
+│   ├── common.py                 # Client helpers, JSONL logger, cost tracker, schema validator
+│   ├── eval_inference.py         # Inference API suite (streaming, RAG grounding, errors, burst)
+│   ├── eval_tasks.py             # Tasks API tiered benchmark & adversarial break-it suite
+│   ├── demo_research_agent.py    # Mini app combining Tasks API + Moss retrieval + Inference API
+│   ├── summarize_results.py      # Aggregates logs/*.jsonl into Markdown metrics tables
+│   ├── test_runner.py            # Selective test runner invoked by the interactive UI
+│   ├── build_dashboard.py        # Generates dashboard/index.html & data.json from logs/*.jsonl
+│   ├── dashboard_server.py       # Local/Render server for live RAG chat & guarded re-runs
+│   └── generate_report_pdf.py    # Optional local PDF report generator
 └── logs/
-    ├── inference_runs.jsonl          # Raw Inference API run logs (secrets scrubbed)
-    ├── tasks_runs.jsonl              # Raw Tasks API run logs (secrets scrubbed)
-    ├── demo_runs.jsonl               # Combined demo run log (secrets scrubbed)
-    └── summary_report.md             # Aggregated Markdown metrics report
+    ├── inference_runs.jsonl      # Raw Inference API run logs (secrets scrubbed)
+    ├── tasks_runs.jsonl          # Raw Tasks API run logs (secrets scrubbed)
+    ├── demo_runs.jsonl           # Combined demo run log (secrets scrubbed)
+    └── summary_report.md         # Aggregated Markdown metrics report
 ```
 
 ## Prerequisites
